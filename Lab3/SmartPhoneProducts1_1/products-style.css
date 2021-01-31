@@ -1,0 +1,53 @@
+/* Form styling */
+body {
+    width: 800px;
+    margin: 0 auto;
+}
+
+/* Styling the images */
+.item img {
+    width: 200px;
+    height: 200px;
+}
+
+/* The globe picture that acts a background */
+main {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    background-image: url("images/phone_globe.jpg");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: 50% 50%;
+    background-size: cover;
+}
+
+/* More block styling */
+body div {
+    border: 5px solid black;
+    display: flex;
+}
+
+h1 {
+    text-align: center;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+h2{
+    text-align: center;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+.rotate img
+{
+  animation: rotation .3s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
