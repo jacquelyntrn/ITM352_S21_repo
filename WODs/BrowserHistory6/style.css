@@ -4,35 +4,12 @@ h1,h2 {
 
 body {
     font-family: 'Open Sans', 'Sans';
-    color: darkblue;
+    color: yellow;
     margin: 10px, 50px, 10px, 50px;
     width: 950px;
-    background-color: ivory;
-}
-
-img {
-    float: left;
-}
-
-#navbar {
-    margin-left: 70px;
-    margin-right: 70px;
+    background-color: black;
 }
 
 li {
     display: inline;
-}
-
-.left {
-    float: left;
-    width: 300px;
-}
-
-.right {
-    float: right;
-    width: 300px;
-}
-
-.center {
-padding: 0.5px;
 }
