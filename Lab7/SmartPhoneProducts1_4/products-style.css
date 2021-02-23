@@ -1,0 +1,64 @@
+/* Form styling */
+body {
+    width: 800px;
+    margin: 0 auto;
+}
+
+/* Styling the images */
+.item img {
+    width: 200px;
+    height: 200px;
+    border: 3px solid cornflowerblue;
+}
+
+/* The globe picture that acts a background */
+main {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    background-image: url("images/phone_globe.jpg");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: 50% 50%;
+    background-size: cover;
+}
+
+/* More block styling */
+body div {
+    border: 5px solid black;
+    display: flex;
+}
+
+/*Changing how the price tag looks*/
+p {
+    background-color:rgba(245, 245, 245, 0.938);
+    border: 2px solid #000000;
+
+    display: table-cell;
+    padding: 3px;
+    font-family: "Courier New", Courier, monospace;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Oswald', 'Sans';
+}
+
+h2{
+    text-align: center;
+    font-family: "Courier New", Courier, monospace;
+}
+
+.rotate img
+{
+  animation: rotation .8s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
