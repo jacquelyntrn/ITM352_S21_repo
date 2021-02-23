@@ -5,8 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link href="products-style.css" rel="stylesheet">
-        <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Oswald|Open+Sans">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Open+Sans">
 
         <title>Smartphone Products</title>
         <style id="localstyle"></style>
@@ -14,7 +13,7 @@
         <script>
                 var first_name = "Jacquelyn";
                 var last_name = "Tran";
-                hit_spin_span.innerHTML.toFixed(2)            
+                var over_half = false;            
         </script>
 
         <h1>
@@ -31,22 +30,62 @@
                         Hits:<span id="hits_span">0</span>
                         Spins:<span id="spins_span">0</span>
                         Hit/Spin:<span id="hit_spin_span">0</span>
-                        You suck:<span id="suck_span"></span>
+                        You win:<span id="win_span">pending...</span>
                 </h2>
+
         </h1>
         <div>
                 <main>
                         <section class="item" onmouseover="
-                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                className = 'item rotate'
+   //             if (!this.className.includes('rotate')) {
                 spins_span.innerHTML = ++spins;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                className = 'item rotate'; 
+  //      }
+        hits_spins_ratio = hits/spins;
+        if ( hits_spins_ratio > 0 ) {
+        progress = 'On your way!';
+        if ( hits_spins_ratio >= 0.25 ) {
+                progress = 'Almost there!';
+                if ( hits_spins_ratio >= 0.5 ) {
+                if( hits < spins) { 
+                        progress = 'You win!';
+                }
+                }
+        }
+        }
+        else {
+        progress = 'Get going!' ;
+        }
+                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits_spins_ratio));
+                win_span.innerHTML = progress;
 
         " onclick="
-                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                hits_span.innerHTML = ++hits;
-                suck_span.innerHTML = (hits/spins > 0.5);
-
+ //               if(this.className.includes('rotate')) {
+                        hits_span.innerHTML = ++hits;  
+                        className='item' 
+   //             } else {
+                        className = 'item rotate';
+    //            }
+    hits_spins_ratio = hits/spins;
+        if ( hits_spins_ratio > 0 && hits_spins_ratio < 0.25) {
+        progress = 'On your way!';
+        else if ( hits_spins_ratio >= 0.25 && hits_spins_ratio < 0.5) {
+                progress = 'Almost there!';
+                else if ( hits_spins_ratio >= 0.5 ) {
+                if( hits < spins) { 
+                        progress = 'You win!';
+                }
+                }
+        }
+        }
+        else {
+        progress = 'Get going!' ;
+        }
+                hit_spin_span.innerHTML = (hits_spins_ratio).toFixed(2);
+                over_half = over_half || ((hits_spins_ratio >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half; 
+        
         className='item'">
                                 <h2>HTC</h2>
                                 <p class="price">&dollar;40.00</p>
@@ -54,32 +93,45 @@
                         </section>
 
                         <section class="item" onmouseover="
-                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                className = 'item rotate'
+  //              if (!this.className.includes('rotate')) {
                 spins_span.innerHTML = ++spins;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                className = 'item rotate'; 
+   //     }
+                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
         " onclick="
+                if(this.className.includes('rotate')) {
+                        hits_span.innerHTML = ++hits;  
+                        className='item' 
+                } else {
+                        className = 'item rotate';
+                }
                 hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                hits_span.innerHTML = ++hits;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
-        className='item'">
+        ">
                                 <h2>Apple</h2>
                                 <p>&dollar;75.00</p>
                                 <img src="http://dport96.github.io/ITM352/morea/080.flow-control-II/iphone-3gs.jpg">
                         </section>
 
                         <section class="item" onmouseover="
-                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                className = 'item rotate'
+        if (!this.className.includes('rotate')) {
                 spins_span.innerHTML = ++spins;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                className = 'item rotate'; 
+        }
+                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
         " onclick="
                 hit_spin_span.innerHTML = (hits/spins).toFixed(2);
                 hits_span.innerHTML = ++hits;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
         className='item'">
                                 <h2>Nokia</h2>
@@ -88,15 +140,17 @@
                         </section>
 
                         <section class="item" onmouseover="
-                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                className = 'item rotate'
                 spins_span.innerHTML = ++spins;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                className = 'item rotate';
+                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
         " onclick="
                 hit_spin_span.innerHTML = (hits/spins).toFixed(2);
                 hits_span.innerHTML = ++hits;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
         className='item'">
                                 <h2>Samsung</h2>
@@ -105,15 +159,17 @@
                         </section>
 
                         <section class="item" onmouseover="
-                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
-                className = 'item rotate'
                 spins_span.innerHTML = ++spins;
-                suck_span.innerHTML = (hits/spins > 0.5);
+                className = 'item rotate';
+                hit_spin_span.innerHTML = (hits/spins).toFixed(2);
+                over_half = over_half || ((hits/spins >= 0.5) && (hits < spins));
+                win_span.innerHTML = over_half;
 
         " onclick="
                 hit_spin_span.innerHTML = (hits/spins).toFixed(2);
                 hits_span.innerHTML = ++hits;
                 suck_span.innerHTML = (hits/spins > 0.5); 
+                win_span.innerHTML = (hits/spins >= 0.5);
 
         className='item'">
                                 <h2>Blackberry</h2>

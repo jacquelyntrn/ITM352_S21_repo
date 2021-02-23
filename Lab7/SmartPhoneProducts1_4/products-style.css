@@ -32,7 +32,6 @@ body div {
 /*Changing how the price tag looks*/
 p {
     background-color:rgba(245, 245, 245, 0.938);
-    border: 2px solid #000000;
 
     display: table-cell;
     padding: 3px;
@@ -47,6 +46,7 @@ h1 {
 h2{
     text-align: center;
     font-family: "Courier New", Courier, monospace;
+    font-size: 18px;
 }
 
 .rotate img
