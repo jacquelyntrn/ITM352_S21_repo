@@ -42,16 +42,16 @@
                 className = 'item rotate'; 
   //      }
         hits_spins_ratio = hits/spins;
-        if ( hits_spins_ratio > 0 ) {
+        if ( hits_spins_ratio > 0 && hits_spins_ratio < 0.25) {
         progress = 'On your way!';
-        if ( hits_spins_ratio >= 0.25 ) {
-                progress = 'Almost there!';
-                if ( hits_spins_ratio >= 0.5 ) {
-                if( hits < spins) { 
+        if ( hits_spins_ratio >= 0.25 && hits_spins_ratio < 0.5) {
+                progress = 'Almost there!'; 
+        if ( hits_spins_ratio >= 0.5 ) {
+        if( hits < spins) { 
                         progress = 'You win!';
                 }
                 }
-        }
+                }
         }
         else {
         progress = 'Get going!' ;
@@ -70,14 +70,14 @@
     hits_spins_ratio = hits/spins;
         if ( hits_spins_ratio > 0 && hits_spins_ratio < 0.25) {
         progress = 'On your way!';
-        else if ( hits_spins_ratio >= 0.25 && hits_spins_ratio < 0.5) {
-                progress = 'Almost there!';
-                else if ( hits_spins_ratio >= 0.5 ) {
-                if( hits < spins) { 
+        if ( hits_spins_ratio >= 0.25 && hits_spins_ratio < 0.5) {
+                progress = 'Almost there!'; 
+        if ( hits_spins_ratio >= 0.5 ) {
+        if( hits < spins) { 
                         progress = 'You win!';
                 }
                 }
-        }
+                }
         }
         else {
         progress = 'Get going!' ;
