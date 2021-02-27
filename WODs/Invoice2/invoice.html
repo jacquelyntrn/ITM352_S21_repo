@@ -40,12 +40,23 @@
   // Compute subtotal
   var subTotal = extended_price1 + extended_price2 + extended_price3 + extended_price4 + extended_price5;
 
+  //Calculate shipping based on the order; it should be based on the sub-total and use stepped shipping amounts ($2 shipping on a subtotal of up to $50, $5 shipping for an order up to $100, 5% for $100 or more)
+  if (subTotal <= 50) {
+    shipping = 2;
+  }
+  else if (subTotal < 100) {
+    shipping = 5;
+  }
+  else {
+    shipping = 0.05 * subTotal
+  }
+
   // Tax rate
   var salesTax = 0.0575;
   var tax = subTotal * salesTax;
 
-  // Grand total
-  var grandTotal = subTotal + tax;
+  // Grand total. Calculate the total now based on subtotal, tax, and shipping.
+  var grandTotal = subTotal + tax + shipping;
 
 </script>
 
@@ -58,7 +69,7 @@
 </head>
 
 <body>
-  <table border="1" bordercolor="#111111" cellpadding="2" cellspacing="0">
+  <table border= "1" bordercolor="#111111" cellpadding="2" cellspacing="0">
     <tbody>
       <tr>
         <th style=" text-align: center;" width="43%">Item</th>
@@ -129,18 +140,17 @@
     <tr>
       <td style="text-align: center;" colspan="3" width="67%">
         Sub-total</td>
-      <td width="54%">$
+      <td width="67%">$
         <script>
-          document.write(subTotal);
+          document.write(subTotal.toFixed(2));
         </script>
       </td>
     </tr>
 
     <tr>
-      <td style="text-align: center;" colspan="3" width="67%">
-        <span>Tax @ 5.75%</span>
+      <td style="text-align: center;" colspan="3" width="67%"><span>Tax @ 5.75%</span>
       </td>
-      <td width="54%">$
+      <td width="67%">$
         <script>
           document.write(tax.toFixed(2));
         </script>
@@ -148,8 +158,16 @@
     </tr>
 
     <tr>
-      <td style="text-align: center;" colspan="3" width="67%">
-        <strong>Total</strong>
+      <td style="text-align: center;" colspan="3" rowspan="1" valign="top"> Shipping</td>
+        <td width="67%">$
+          <script>
+            document.write(shipping.toFixed(2));
+          </script>
+        </td>
+      </tr>
+      
+    <tr>
+      <td style="text-align: center;" colspan="3" width="67%"><strong>Total</strong>
       </td>
 
       <td width="54%"><strong>$
@@ -164,9 +182,12 @@
 
     <script>//The shipphing policy is written here to be on the bottom</script>
     <div><strong>
-
+      OUR SHIPPING POLICY IS:A subtotal $0 - $49.99 will be $2 shipping
+      <br>
+      A subtotal $50 - $99.99 will be $5 shipping
+      <br>
+      Subtotals over $100 will be charged 5% of the subtotal amount
       </strong>
     </div>
 </body>
-
 </html>
