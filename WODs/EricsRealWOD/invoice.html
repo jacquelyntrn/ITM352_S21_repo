@@ -1,0 +1,189 @@
+<script src="./products_data.js">
+  /*
+  This file is used to create an invoice.
+  */
+
+  // Product data
+
+  // Product 1
+  var item1 = 'Gillette Sensor 3 Razor';
+  var quantity1 = 2;
+  var price1 = 1.23;
+
+  // Product 2
+  var item2 = 'Barbasol Shaving Cream';
+  var quantity2 = 1;
+  var price2 = 2.64;
+
+  // Product 3
+  var item3 = 'Nautica Cologne';
+  var quantity3 = 1;
+  var price3 = 6.17;
+
+  // Product 4
+  var item4 = 'Rubbing Alcohol';
+  var quantity4 = 3;
+  var price4 = 0.98;
+
+  // Product 5
+  var item5 = 'Colgate Classic Toothbrush';
+  var quantity5 = 12;
+  var price5 = 1.89;
+
+  // Compute extended prices
+  var subTotal = 0;
+
+  //Calculate shipping based on the order; it should be based on the sub-total and use stepped shipping amounts ($2 shipping on a subtotal of up to $50, $5 shipping for an order up to $100, 5% for $100 or more)
+  if (subTotal <= 50) {
+    shipping = 2;
+  }
+  else if (subTotal < 100) {
+    shipping = 5;
+  }
+  else {
+    shipping = 0.05 * subTotal
+  }
+
+</script>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <table border="1" bordercolor="#111111" cellpadding="2" cellspacing="0">
+    <tbody>
+      <tr>
+        <th style=" text-align: center;" width="43%">Item</th>
+        <th style="text-align: center;" width="11%">Quantity</th>
+        <th style="text-align: center;" width="13%">Price</th>
+      </tr>
+
+      <script>
+
+        // Computing extended price for product 1
+        for (i = 1; i <= 5; i++) {
+          extended_price = eval("quantity" + i) * eval("price" + i);
+          subTotal += extended_price
+        }
+
+        // Product row 1
+        document.write(`
+          <tr>
+            <td width="43%">${item1}</td>
+            <td align="center" width="11%">${quantity1}</td>
+            <td width="13%">$${price1}</td>
+          </tr>
+          `);
+
+        // Product row 2
+        document.write(`
+          <tr>
+            <td width="43%">${item2}</td>
+            <td align="center" width="11%">${quantity2}</td>
+            <td width="13%">$${price2}</td>
+          </tr>
+          `);
+
+        // Product row 3
+        document.write(`
+          <tr>
+            <td width="43%">${item3}</td>
+            <td align="center" width="11%">${quantity3}</td>
+            <td width="13%">$${price3}</td>
+          </tr>
+          `);
+
+        // Product row 4
+        document.write(`
+          <tr>
+            <td width="43%">${item4}</td>
+            <td align="center" width="11%">${quantity4}</td>
+            <td width="13%">$${price4}</td>
+          </tr>
+          `);
+
+        // Product row 5
+        document.write(`
+          <tr>
+            <td width="43%">${item5}</td>
+            <td align="center" width="11%">${quantity5}</td>
+            <td width="13%">$${price5}</td>
+          </tr>
+          `);
+          //After items are listed there is an extra row for spacing that is the &nbsp
+      </script>
+
+      <tr>
+        <td colspan="4" width="100%">&nbsp;
+        </td>
+      </tr>
+
+      <script>
+        // Tax rate
+        var salesTax = 0.0575;
+        var tax = subTotal * salesTax;
+
+        // Grand total. Calculate the total now based on subtotal, tax, and shipping.
+        var grandTotal = subTotal + tax + shipping;
+      </script>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%">
+          Sub-total</td>
+        <td width="67%">$
+          <script>
+            document.write(subTotal.toFixed(2));
+          </script>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%"><span>Tax @ 5.75%</span>
+        </td>
+        <td width="67%">$
+          <script>
+            document.write(tax.toFixed(2));
+          </script>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" rowspan="1" valign="top"> Shipping</td>
+        <td width="67%">$
+          <script>
+            document.write(shipping.toFixed(2));
+          </script>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%"><strong>Total</strong>
+        </td>
+
+        <td width="54%"><strong>$
+            <script>
+              //Step 4 print out the shipping charge above the total so above this
+              document.write(grandTotal.toFixed(2));
+            </script>
+          </strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>//The shipphing policy is written here to be on the bottom</script>
+  <div><strong>
+      OUR SHIPPING POLICY IS:A subtotal $0 - $49.99 will be $2 shipping
+      <br>
+      A subtotal $50 - $99.99 will be $5 shipping
+      <br>
+      Subtotals over $100 will be charged 5% of the subtotal amount
+    </strong>
+  </div>
+</body>
+
+</html>
