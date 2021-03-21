@@ -1,0 +1,151 @@
+<script>
+  /*
+  This file is used to create an invoice.
+  */
+
+  // Product data
+
+  // Product 1
+  var item1 = 'Gillette Sensor 3 Razor';
+  var quantity1 = 20;
+  var price1 = 1.23;
+
+  // Product 2
+  var item2 = 'Barbasol Shaving Cream';
+  var quantity2 = 1;
+  var price2 = 2.64;
+
+  // Product 3
+  var item3 = 'Nautica Cologne';
+  var quantity3 = 1;
+  var price3 = 6.17;
+
+  // Product 4
+  var item4 = 'Rubbing Alcohol';
+  var quantity4 = 0;
+  var price4 = 0.98;
+
+  // Product 5
+  var item5 = 'Colgate Classic Toothbrush';
+  var quantity5 = 10;
+  var price5 = 1.89;
+</script>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <table border="1" bordercolor="#111111" cellpadding="2" cellspacing="0">
+    <tbody>
+      <tr>
+        <th style=" text-align: center;" width="43%">Item</th>
+        <th style="text-align: center;" width="11%">Quantity</th>
+        <th style="text-align: center;" width="13%">Price</th>
+        <th style="text-align: center;" width="54%">Extended Price</th>
+      </tr>
+
+      <script>
+        // Compute subtotal
+        var subTotal = 0;
+
+        // Product loop
+        for (i = 1; eval("typeof item" + i) != 'undefined'; i++) {
+          var extended_price = eval('quantity' + i) * eval('price' + i);
+
+          var subTotal = subTotal + extended_price;
+
+          document.write(`
+          <tr>
+            <td width="43%">${eval('item' + i)}</td>
+            <td align="center" width="11%">${eval('quantity' + i)}</td>
+            <td width="13%">$${eval('price' + i)}</td>
+            <td width="54%">$${extended_price}</td>
+          </tr>
+          `)
+        };
+
+        //Calculate shipping based on the order; it should be based on the sub-total and use stepped shipping amounts ($2 shipping on a subtotal of up to $50, $5 shipping for an order up to $100, 5% for $100 or more)
+        if (subTotal <= 50) {
+          shipping = 2;
+        }
+        else if (subTotal < 100) {
+          shipping = 5;
+        }
+        else {
+          shipping = 0.05 * subTotal
+        }
+
+        // Tax rate
+        var salesTax = 0.0575;
+        var tax = subTotal * salesTax;
+
+        // Grand total. Calculate the total now based on subtotal, tax, and shipping.
+        var grandTotal = subTotal + tax + shipping;
+
+      </script>
+
+      <tr>
+        <td colspan="4" width="100%">&nbsp;
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%">
+          Sub-total</td>
+        <td width="67%">$
+          <script>
+            document.write(subTotal.toFixed(2));
+          </script>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%"><span>Tax @ 5.75%</span>
+        </td>
+        <td width="67%">$
+          <script>
+            document.write(tax.toFixed(2));
+          </script>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" rowspan="1" valign="top"> Shipping</td>
+        <td width="67%">$
+          <script>
+            document.write(shipping.toFixed(2));
+          </script>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="text-align: center;" colspan="3" width="67%"><strong>Total</strong>
+        </td>
+
+        <td width="54%"><strong>$
+            <script>
+              //Step 4 print out the shipping charge above the total so above this
+              document.write(grandTotal.toFixed(2));
+            </script>
+          </strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>//The shipphing policy is written here to be on the bottom</script>
+  <div><strong>
+      OUR SHIPPING POLICY IS:A subtotal $0 - $49.99 will be $2 shipping
+      <br>
+      A subtotal $50 - $99.99 will be $5 shipping
+      <br>
+      Subtotals over $100 will be charged 5% of the subtotal amount
+    </strong>
+  </div>
+</body>
+
+</html>
