@@ -64,7 +64,7 @@
             <td width="43%">${eval('item' + i)}</td>
             <td align="center" width="11%">${eval('quantity' + i)}</td>
             <td width="13%">$${eval('price' + i)}</td>
-            <td width="54%">$${extended_price}</td>
+            <td width="54%">$${extended_price.toFixed(2)}</td>
           </tr>
           `)
         };
