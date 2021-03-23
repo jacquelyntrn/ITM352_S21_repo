@@ -1,6 +1,7 @@
-/*for(part of info) {
-    console.log(isNonNegInt(info));
-}
+age = 20;
+name = "Jackie";
+attributes = name + ";" + age + ";" + (age + 0.5) + ";" + (0.5 - age);
+pieces = attributes.split(';');
 
 function isNonNegInt (q, returnErrors=false) {
 errors = []; // assume no errors at first
@@ -11,7 +12,13 @@ if(parseInt(q) != q) errors.push('Not an integer!'); // Check that it is an inte
 return returnErrors ? errors : (errors.length == 0)
 }
 
-isNonNegInt('1');
-isNonNegInt('-1');
+console.log(pieces)
+
+for (i in pieces) {
+    console.log (isNonNegInt (pieces[i]));
+}
+
+console.log (isNonNegInt('20'));
+/*isNonNegInt('-1');
 isNonNegInt('.19');
 isNonNegInt('word');*/
