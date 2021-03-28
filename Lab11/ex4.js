@@ -13,7 +13,9 @@ return returnErrors ? errors : (errors.length == 0) //returns an array of all th
 }
 
 function checkNum(item, index) {
+    //when there is an error then it will join it
     returnErrors = isNonNegInt(item, true).join(" ");
+    //when error length is 0 then there is no errors
     if (returnErrors.length == 0) {
         console.log("\'" + item + "' is valid");
     } else {

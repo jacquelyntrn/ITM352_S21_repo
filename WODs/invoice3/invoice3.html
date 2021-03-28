@@ -50,10 +50,10 @@
       </tr>
 
       <script>
-        // Compute subtotal
+        //compute subtotal
         var subTotal = 0;
 
-        // Product loop
+        //product loop
         for (i = 1; eval("typeof item" + i) != 'undefined'; i++) {
           var extended_price = eval('quantity' + i) * eval('price' + i);
 
@@ -129,7 +129,6 @@
 
         <td width="54%"><strong>$
             <script>
-              //Step 4 print out the shipping charge above the total so above this
               document.write(grandTotal.toFixed(2));
             </script>
           </strong></td>
