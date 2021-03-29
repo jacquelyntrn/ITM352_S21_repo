@@ -69,7 +69,7 @@
           `)
         };
 
-        //Calculate shipping based on the order; it should be based on the sub-total and use stepped shipping amounts ($2 shipping on a subtotal of up to $50, $5 shipping for an order up to $100, 5% for $100 or more)
+        //calculate shipping based on the order; it should be based on the sub-total and use stepped shipping amounts ($2 shipping on a subtotal of up to $50, $5 shipping for an order up to $100, 5% for $100 or more)
         if (subTotal <= 50) {
           shipping = 2;
         }
@@ -80,11 +80,11 @@
           shipping = 0.05 * subTotal
         }
 
-        // Tax rate
+        //tax rate
         var salesTax = 0.0575;
         var tax = subTotal * salesTax;
 
-        // Grand total. Calculate the total now based on subtotal, tax, and shipping.
+        //grand total. calculate the total now based on subtotal, tax, and shipping.
         var grandTotal = subTotal + tax + shipping;
 
       </script>
