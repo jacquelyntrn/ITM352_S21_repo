@@ -24,19 +24,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Receipt</title>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <style>
+        body {
+            background: rgb(255, 255, 255);
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            border: solid black;
+        }
+
+        th {
+            font-size: x-large;
+        }
+
+        td {
+            height: 30px;
+            padding-left: 10px;
+        }
+    </style>
+
 </head>
 
 <body>
     <header>
-        <h1>Your Matcha Madness Receipt</h1>
+        <h1 class="w3-xxlarge"><strong>Your Matcha Madness Receipt</strong></h1>
     </header>
-    <table border="1" bordercolor="#111111" cellpadding="2" cellspacing="0">
+    <table border="1" bordercolor="#111111" cellpadding="2" cellspacing="0" style="width: 1000px;">
         <tbody>
             <tr id="invoice">
-                <th style="text-align: center;" width="43%">Item</th>
-                <th style="text-align: center;" width="11%">Quantity</th>
+                <!--the titles for the table-->
+                <th style="text-align: center;" width="35%">Item</th>
+                <th style="text-align: center;" width="20%">Quantity</th>
                 <th style="text-align: center;" width="13%">Price</th>
-                <th style="text-align: center;" width="54%">Extended Price</th>
+                <th style="text-align: center;" width="20%">Extended Price</th>
             </tr>
 
             <script>
@@ -50,10 +77,10 @@
                         subTotal += extended_price;
                         document.write(`
                         <tr>
-                            <td width="43%">${products[i].name}</td>
-                            <td align="center" width="11%">${quantities[i]}</td>
-                            <td width="13%">\$${products[i].price.toFixed(2)}</td>
-                            <td width="54%">\$${extended_price.toFixed(2)}</td>
+                            <td align="center" width="35%">${products[i].name}</td>
+                            <td align="center" width="20%">${quantities[i]}</td>
+                            <td align="center" width="13%">\$${products[i].price.toFixed(2)}</td>
+                            <td align="center" width="67%">\$${extended_price.toFixed(2)}</td>
                         </tr>
                         `);
                     }
@@ -72,71 +99,73 @@
                 }
 
                 //tax rate
-                var salesTax = 0.0575;
+                var salesTax =0.0575;
                 var tax = subTotal * salesTax;
 
                 //grand total. calculate the total now based on subtotal, tax, and shipping.
                 var grandTotal = subTotal + tax + shipping;
-                //below prints out the invoice summary
             </script>
 
+            <!--below prints out the invoice summary-->
             <tr>
                 <td colspan="4" width="100%">&nbsp;</td>
             </tr>
             <tr>
-                <td style="text-align: center;" colspan="3" width="67%">
+                <td style="text-align: center;" colspan="3" width="67%" class="w3-wide">
                     Sub-total</td>
-                <td width="67%">$
-                    <script>
+                <td width="67%">
+                    $<script>
                         document.write(subTotal.toFixed(2));
                     </script>
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;" colspan="3" width="67%"><span>Tax @ 5.75%</span>
+                <td style="text-align: center;" colspan="3" width="67%" class="w3-wide"><span>Tax @ 5.75%</span>
                 </td>
-                <td width="67%">$
-                    <script>
+                <td width="67%">                    
+                    $<script>
                         document.write(tax.toFixed(2));
                     </script>
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;" colspan="3" rowspan="1" valign="top"> Shipping</td>
-                <td width="67%">$
-                    <script>
+                <td style="text-align: center;" colspan="3" width="67%" class="w3-wide">Shipping</td>
+                <td width="67%">                    
+                    $<script>
                         document.write(shipping.toFixed(2));
                     </script>
                 </td>
             </tr>
             <tr>
-                <td style="text-align: center;" colspan="3" width="67%"><strong>Total</strong>
+                <td style="text-align: center;" colspan="3" width="67%" class="w3-wide"><strong>Total</strong>
                 </td>
 
-                <td width="54%"><strong>$
-                        <script>
+                <td width="67%"><strong>
+                        $<script>
                             document.write(grandTotal.toFixed(2));
                         </script>
                     </strong></td>
             </tr>
-            <td style="text-align: left;" colspan="4" width="121%"><strong>
-                <div><strong>
-                    OUR SHIPPING POLICY IS:A subtotal $0 - $49.99 will be $2 shipping
-                    <br>
-                    A subtotal $50 - $99.99 will be $5 shipping
-                    <br>
-                    Subtotals over $100 will be charged 5% of the subtotal amount
-                  </strong>
-                </div>
+            <!--statement printed a part at the end of the table-->
+            <td style="text-align: left; padding: 20px;" colspan="4" width="121%"><strong>
+                    <div><strong>
+                            OUR SHIPPING POLICY:
+                            <br>
+                            Subtotals $0 - $49.99 will be $2 shipping
+                            <br>
+                            Subtotals $50 - $99.99 will be $5 shipping
+                            <br>
+                            Subtotals over $100 will be charged 5% of the subtotal amount
+                        </strong>
+                    </div>
                 </strong></td>
             </tr>
         </tbody>
     </table>
 
 </body>
-<footer>
-    <br>
-    <strong>Thank you for your purchase!</strong>
+<footer style="margin-top: 5px;">
+    <strong>Thank you for shopping with us! Matcha-ppreciated!</strong>
 </footer>
 
 </html>

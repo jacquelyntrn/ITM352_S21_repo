@@ -14,7 +14,7 @@
 
     function checkQuantityTextbox(theTextbox) { //borrowed from example on Assignment1
         errs = isNonNegInt(theTextbox.value, true); //valid
-        if (errs.length == 0) errs = ['You want:']; //when typing in the textbox, this will display 
+        if (errs.length == 0) errs = ['You ordered:']; //when typing in the textbox, this will display 
         if (theTextbox.value.trim() == '') errs = ['Quantity:'];
         document.getElementById(theTextbox.name + '_label').innerHTML = errs.join(", ");
     }
@@ -38,7 +38,6 @@
                 }
             }
 
-            
             if (has_errors) {
                 alert("Please enter only valid quantities"); //pop up warning if invalid
             } else if (total_qty == 0) { //empty inputs
@@ -60,19 +59,20 @@
 
     <link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Raleway" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link href="style.css" rel="stylesheet">
+    <link href="style-display.css" rel="stylesheet">
     <script src="./products_data.js" type="text/javascript"></script>
 </head>
 
 <!-- nav bar from w3 template, for future assignments-->
 <div class="w3-top">
     <div class="w3-bar w3-white w3-wide w3-padding w3-card">
-        <a class="w3-bar-item"><b>MATCHA MADNESS</b> by Jacquelyn Tran</a>
+        <a class="w3-bar-item"><b>MM</b> by Jacquelyn Tran</a>
     </div>
 </div>
 
-<header class="w3-display-container w3-content w3-wide" style="width:max-content;" id="home">
-    <img class="w3-image" src="./images/matcha-bkg.jpg" style="margin-bottom: 30px">
+<!--borrowed from template, title of homepage with the picture of cup-->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1200px;">
+    <img class="w3-image" src="./images/matcha-bkg.jpg" width="1200px;">
     <div class="w3-display-middle w3-margin-top w3-center">
         <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>MATCHA
                     MADNESS</b></span></h1>
@@ -80,32 +80,36 @@
 </header>
 
 <body>
-    <div>
+    <div class="w3-container w3-padding">
+        <h3 class="w3-border-bottom w3-border-grey">Our shop</h3>
+        </div>
         <form name="product_selection_form" action="" method="GET">
             <main>
                 <script>
                     //loop prints products, info, quantity
                     for (var i = 0; i < products.length; i++) {
                         document.write(`
-                        <section class="item" style="margin-bottom: 30px">
+                        <section class="item" style="margin-bottom: 80px">
                         <div class="w3-display-container">
                             <div class="w3-display-topleft w3-black w3-padding w3-opacity-min">${products[i].name}</div>
                             <img src=${products[i].image}>
-                            <p>&dollar;${products[i].price}</p>
-                            <label id="quantity${i}_label">Quantity:</label>
+                            <p id="pTag">&dollar;${products[i].price.toFixed(2)}</p>
+                            <label id="quantity${i}_label" >Quantity:</label>
                             <input type="text" width="200" placeholder="0" name="quantity${i}" onkeyup="checkQuantityTextbox(this);">
+                            <p class="w3-border-top w3-padding-16">${products[i].disc}</p>
                         </section>
-                            `);
+                        `);
                     }
+                    //
                 </script>
             </main>
-    </div>
     <!--checkout button in the navbar for now-->
-    <a class="w3-bottom">
-    <input class="w3-bar-item w3-button" type="submit" value=Checkout name="purchase_submit">
-    </a>
+    <div class="w3-top w3-padding">
+        <input class="w3-bar-item w3-button w3-right w3-wide" type="submit" value=Checkout name="purchase_submit">
+    </div>
     </form>
 </body>
-<footer>
+<footer class="w3-center w3-black w3-padding-16">
+    <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" title="W3.CSS" target="_blank" class="w3-hover-text-green">w3.css</a></p>
 </footer>
 </html>
