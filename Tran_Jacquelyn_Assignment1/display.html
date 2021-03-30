@@ -13,7 +13,7 @@
     }
 
     function checkQuantityTextbox(theTextbox) { //borrowed from example on Assignment1
-        errs = isNonNegInt(theTextbox.value, true); //if non negative integer, then data is valid
+        errs = isNonNegInt(theTextbox.value, true); //valid
         if (errs.length == 0) errs = ['You want:']; //when typing in the textbox, this will display 
         if (theTextbox.value.trim() == '') errs = ['Quantity:'];
         document.getElementById(theTextbox.name + '_label').innerHTML = errs.join(", ");
@@ -21,14 +21,14 @@
 
     window.onload = function () {
         let params = (new URL(document.location)).searchParams; //get the query string which has the form data
-        //form was submitted so check that quantities are valid then redirect to invoice if ok.
+        //form submit > valid > invoice
         if (params.has('purchase_submit')) {
             has_errors = false; //assume quantities are valid from the start
             total_qty = 0; //need to check if something was selected so we will look if the total > 0
             for (i = 0; i < products.length; i++) {
                 if (params.has(`quantity${i}`)) {
                     a_qty = params.get(`quantity${i}`);
-                    //make textboxes sticky in case of invalid data
+                    //if it's invalid it will save in the url
                     product_selection_form[`quantity${i}`].value = a_qty;
                     total_qty += a_qty;
                     if (!isNonNegInt(a_qty)) {
@@ -38,12 +38,12 @@
                 }
             }
 
-            //now respond to errors or redirect to invoice if all is ok
+            
             if (has_errors) {
-                alert("Please enter only valid quantities");
-            } else if (total_qty == 0) { //no quantity selections, just give a general alert
+                alert("Please enter only valid quantities"); //pop up warning if invalid
+            } else if (total_qty == 0) { //empty inputs
                 alert("Please select some quantities");
-            } else { //all good to go!
+            } else { //perform redirect to invoice
                 window.location = `./invoice.html${document.location.search}`;
                 window.stop;
             }
@@ -60,18 +60,26 @@
 
     <link href="https://fonts.googleapis.com/css?family=Cherry+Swash|Raleway" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="style.css" rel="stylesheet">
     <script src="./products_data.js" type="text/javascript"></script>
-
 </head>
 
+<!-- nav bar from w3 template, for future assignments-->
+<div class="w3-top">
+    <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+        <a class="w3-bar-item"><b>MATCHA MADNESS</b> by Jacquelyn Tran</a>
+    </div>
+</div>
+
+<header class="w3-display-container w3-content w3-wide" style="width:max-content;" id="home">
+    <img class="w3-image" src="./images/matcha-bkg.jpg" style="margin-bottom: 30px">
+    <div class="w3-display-middle w3-margin-top w3-center">
+        <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>MATCHA
+                    MADNESS</b></span></h1>
+    </div>
+</header>
+
 <body>
-
-    <header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
-        <div class="w3-margin-top w3-center">
-            <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min">MATCHA MADNESS</span></h1>
-        </div>
-    </header>
-
     <div>
         <form name="product_selection_form" action="" method="GET">
             <main>
@@ -79,40 +87,25 @@
                     //loop prints products, info, quantity
                     for (var i = 0; i < products.length; i++) {
                         document.write(`
-                        <div class="w3-col l3 m6 w3-margin-bottom">
+                        <section class="item" style="margin-bottom: 30px">
                         <div class="w3-display-container">
-                            <div class="w3-display-topleft w3-black w3-padding">${products[i].name}</div>
-                            <img src=${products[i].image} style="width:300px">
-                            <p style="   
-                                background: pink;
-                                width: 50px;
-                                height: 50px;
-                                line-height: 50px;
-                                text-align: center;
-                                border-radius: 50%;
-                                right: 10px;
-                                bottom: -6px;
-                                ">&dollar;${products[i].price}</p>
+                            <div class="w3-display-topleft w3-black w3-padding w3-opacity-min">${products[i].name}</div>
+                            <img src=${products[i].image}>
+                            <p>&dollar;${products[i].price}</p>
                             <label id="quantity${i}_label">Quantity:</label>
-                            <input type="text" width="200" placeholder="0" name="quantity${i}" onkeyup="checkQuantityTextbox(this);" 
-                            style="background: black;
-                                color:white;
-                                width: 50px;
-                                height: 50px;
-                                text-align: center;
-                                position: absolute;
-                                ">
-                        </div>
-                        </div>
+                            <input type="text" width="200" placeholder="0" name="quantity${i}" onkeyup="checkQuantityTextbox(this);">
+                        </section>
                             `);
                     }
                 </script>
             </main>
     </div>
+    <!--checkout button in the navbar for now-->
+    <a class="w3-bottom">
+    <input class="w3-bar-item w3-button" type="submit" value=Checkout name="purchase_submit">
+    </a>
     </form>
 </body>
 <footer>
-    <input type="submit" value=Purchase name="purchase_submit">
 </footer>
-
 </html>

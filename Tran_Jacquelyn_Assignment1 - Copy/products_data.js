@@ -3,9 +3,9 @@
 //product info
 products = [
     product1 = {
-        name: "Kit Kat",
-        price: 11.00,
-        image: "./images/kitkat.jpg"
+        name: "Softserve",
+        price: 6.00,
+        image: "./images/softserve.jpg"
     },
 
     product2 = {
@@ -21,14 +21,14 @@ products = [
     },
 
     product4 = {
-        name: "Sakura Pocky",
+        name: "Cake",
         price: 20.00,
-        image: "./images/pocky-sakura.jpg"
+        image: "./images/cake.jpg"
     },
 
     product5 = {
-        name: "Softserve",
-        price: 6.00,
-        image: "./images/softserve.jpg"
+        name: "Kit Kat",
+        price: 11.00,
+        image: "./images/kitkat.jpg"
     },
 ]

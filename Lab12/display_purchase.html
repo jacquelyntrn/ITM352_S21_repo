@@ -1,4 +1,5 @@
 <script>
+    let params = (new URL(document.location)).searchParams;
 
     function isNonNegInt(q, returnErrors = false) {
         if (q == '') q = 0;
@@ -11,14 +12,24 @@
     }
 
     window.onload = function () {
-        if (params.has('quantity_textbox')) {
-            if (isNonNegInt(params.get('quantity_textbox'))) { //asks if quantity is valid
+        if (params.get("quantity_textbox")) {
+            if (params.has("quantity_textbox") == true) {
                 document.body.innerHTML(`Thank for you for ordering ${params.get('quantity_textbox')} things!`);
-            } else {
-                window.location.href = order_page.html 
             }
         }
     }
+
+/*    window.onload = function () {
+        let params = (new URL(document.location)).searchParams;
+        if (params.has('quantity_textbox')) {
+            if (isNonNegInt(params.get('quantity_textbox')) == true) { //asks if quantity is valid
+                window.location.href = order_page.html
+            } else {
+                document.body.innerHTML(`Thank for you for ordering ${params.get('quantity_textbox')} things!`);
+            }
+        }
+    }
+    */
 </script>
 <!DOCTYPE html>
 <html lang="en">
