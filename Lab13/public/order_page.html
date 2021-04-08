@@ -47,12 +47,12 @@
 
 <body>
 
-    <form name="quantity_form" action="localhost:8080/process_form" method="POST">
+    <form name="quantity_form" action="/process_form" method="POST">
         <label>Quantity desired: </label>
         <input name='quantity_textbox' type="text" placeholder="0" onkeyup="checkQuantityTextbox(this);">
         <span id='qty_textbox_message'>Enter a quantity</span>
         <br>
-        <input type="submit" value=Purchase onclick="displayPurchase(this);">
+        <input type="submit" value=Purchase>
     </form>
 
 
