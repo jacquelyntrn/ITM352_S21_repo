@@ -1,0 +1,27 @@
+[
+    {
+        "item" : "Chicken Ramen",
+        "price" : 0.50,
+        "img" : "chickenramen.jpg"
+    },
+    {
+        "item" : "Nissin Instant Kitsune Udon",
+        "price" : 3.50,
+        "img" : "nissininstantkitsuneudon.jpg"
+    },
+    {
+        "item" : "Ottogi Ramyonsari",
+        "price" : 3.00,
+        "img" : "ottogiramyonsari.jpg"
+    },
+    {
+        "item" : "Shin Ramyun",
+        "price" : 1.50,
+        "img" : "shinramyun.jpg"
+    },
+    {
+        "item" : "Tonkotsu Ramen",
+        "price" : 5.00,
+        "img" : "tonotsuramen.jpg"
+    }
+]

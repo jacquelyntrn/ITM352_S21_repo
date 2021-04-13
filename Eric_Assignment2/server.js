@@ -1,19 +1,22 @@
-//credit for code from Eric Choy
+/* 
+Name: Eric Choy
+Purpose: Hosting a server for assignment 2
+*/
 
-const querystring = require('querystring');
-var express = require('express'); //express package
+var querystring = require('querystring');
+var express = require('express'); // Express package
 var app = express();
-var myParser = require("body-parser"); //parser package
-var products = require('./static/products_data.js');
+var myParser = require("body-parser"); // Parser package
+var products = require('./products.json');
 const { request } = require('http');
 var fs = require('fs');
 var qs = require('querystring');
 const { response, query } = require('express');
 
-var input_quantities = []; //for users that inputted quantities for products
+var input_quantities = []; // For users that inputted quantities for products
 
 
-//code from Lab13
+// Code from Lab13
 app.all('*', function (request, response, next) {
    console.log(request.method + ' to path ' + request.path);
    next();
@@ -21,41 +24,16 @@ app.all('*', function (request, response, next) {
 
 app.use(myParser.urlencoded({ extended: true }));
 
-app.post("/process_page", function (request, response, next) {
-   let POST = request.body;
-    if (typeof POST['purchase_submit'] != 'undefined') { //reply undefined if info does not match 
-        var has_valid_qtys = true; //assumes that quantity is invalid 
-        var has_qtys = false; //assumes that quantity is valid
-        //create a loop to ensure quantities are valid
-        for (var i = 0; i < products.length; i++) {
-            var qty = POST[`quantity${i}`];
-            has_qtys = has_qtys || qty > 0
-            has_valid_qtys = has_valid_qtys && isNonNegInt(qty);
-        }
-        //if qtys are good, create an invoice 
-        const stringified = querystring.stringify(POST);
-        if (has_valid_qtys && has_qtys) {
-            //redirect to login
-            response.redirect("./login.html?" + stringified);
-            return; //stops the function 
-        } else {
-            //if not ready, go back to order page 
-            response.redirect("./display.html?" + stringified);
-        }
-    }
-});
-
-app.get("/process_page", function (request, response, next) {
-   input_quantities = request.query //for User data
-   //check if quantity data is valid
+app.get("/process_page", function (request, response) {
+   input_quantities = request.query // for User data
+   // check if quantity data is valid
    params = request.query;
    console.log(params);
-  
    if (typeof params['purchase_submit'] != 'undefined') {
-      has_errors = false; //borrowed from example on Assignment1
+      has_errors = false; // Borrowed from example on Assignment1
       total_qty = 0;
-      for (i = 0; i < products.length; i++) { //checking each of the products in the array
-         if (typeof params[`quantity${i}`] != 'undefined') {  //if not undefined then move on to the next if statement
+      for (i = 0; i < products.length; i++) { // Checking each of the products in the array
+         if (typeof params[`quantity${i}`] != 'undefined') {  // If not undefined then move on to the next if statement
             a_qty = params[`quantity${i}`];
             total_qty += a_qty;
             if (!isNonNegInt(a_qty)) {
@@ -66,28 +44,32 @@ app.get("/process_page", function (request, response, next) {
       console.log(has_errors, total_qty);
       qstr = querystring.stringify(request.query);
       if (has_errors || total_qty == 0) {
-         //if quantity is not valid, send them back to the store
+         // If quantity is not valid, send them back to the store
          qstr = querystring.stringify(request.query);
-         response.redirect("display.html?" + qstr);
-         //if quantity is valid, send an invoice/login page
+         response.redirect("store.html?" + qstr);
+         // If quantity is valid, send an invoice/login page
       } else {
          response.redirect("login.html?" + qstr);
       }
    }
 });
 
-//function isNonNegInt taken from Lab13
-function isNonNegInt(stringToCheck, returnErrors = false) { //checks whether the string is a valid integer
-   errors = []; //assume no errors at first
+// Used code from Lab13
+app.use(express.static('./public'));
+app.listen(8080, () => console.log(`listening on port 8080`)); // note the use of an anonymous function here
+
+// Function isNonNegInt taken from Lab13
+function isNonNegInt(stringToCheck, returnErrors = false) { // Checks whether the string is a valid integer
+   errors = []; // assume no errors at first
    if (stringToCheck == "") stringToCheck = 0;
-   if (Number(stringToCheck) != stringToCheck) errors.push('Not a number!');
-   if (stringToCheck < 0) errors.push('Negative value!');
-   if (parseInt(stringToCheck) != stringToCheck) errors.push('Not an integer!');
+   if (Number(stringToCheck) != stringToCheck) errors.push('Not a number!'); // Check if string is a number value
+   if (stringToCheck < 0) errors.push('Negative value!'); // Check if it is non-negative
+   if (parseInt(stringToCheck) != stringToCheck) errors.push('Not an integer!'); // Check that it is an integer
 
    return returnErrors ? errors : (errors.length == 0);
 }
 
-//borrowed from Lab14
+// Borrowed from Lab14
 var filename = "user_data.json";
 
 if (fs.existsSync(filename)) {
@@ -100,15 +82,15 @@ if (fs.existsSync(filename)) {
    exit();
 }
 
-//used base from Lab14
+// Used base from Lab14
 app.post("/login.html", function (request, response) {
-   console.log(input_quantities); //reports the user input in console
+   console.log(input_quantities); // Reports the user input in console
    var id_username = request.body.username;
-   id_username = request.body.username.toLowerCase(); //makes username case insensitive
-   console.log("username = " + id_username) //tells us what the username tbey inputted is
+   id_username = request.body.username.toLowerCase(); // Makes username case insensitive
+   console.log("username = " + id_username) // Tells us what the username tbey inputted is
    if (typeof user_data[id_username] != 'undefined') {
       if (user_data[id_username].password == request.body.password) {
-         quantityQstring = qs.stringify(input_quantities); //if the info is correct, make inputs a string
+         quantityQstring = qs.stringify(input_quantities); // If the info is correct, make inputs a string
          response.redirect('/invoice.html?' + quantityQstring + `&username=${id_username}`)
       } else {
          error = "Invalid password";
@@ -116,7 +98,7 @@ app.post("/login.html", function (request, response) {
    } else {
       error = "Invalid username";
    }
-   request.query.LoginError = error;   //in case of info errors, make the username sticky
+   request.query.LoginError = error;   // In case of info errors, make the username sticky
    request.query.StickyLoginUser = id_username;
    qstring = querystring.stringify(request.query);
    response.redirect('/login.html?error=' + error);
@@ -124,31 +106,31 @@ app.post("/login.html", function (request, response) {
 
 app.post("/registration.html", function (request, response) {
 
-   //make case insensitive
+   // Make case insensitive
    username = request.body.username.toLowerCase();
    email = request.body.email.toLowerCase();
 
-   //turns quantity object into a string
+   // Turns quantity object into a string
    quantityQstring = qs.stringify(input_quantities);
 
-   //variables for error messages
+   // Variables for error messages
    var reg_errors = [];
    var name_errors = [];
    var user_errors = [];
    var pass_errors = [];
    var email_errors = [];
 
-   //full name error checks
-   if (request.body.fullname > 30) { //check to see if name is too long
+   // Full name error checks
+   if (request.body.fullname > 30) { // Check to see if name is too long
       reg_errors.push("Name is too long. Please shorten below 30 characters.");
       name_errors.push("Name is too long. Please shorten below 30 characters.");
    }
-   if ((/[a-zA-Z]+[ ]+[a-zA-Z]+/).test(request.body.fullname) == false) { //another attempt from the reg expression stuff
+   if ((/[a-zA-Z]+[ ]+[a-zA-Z]+/).test(request.body.fullname) == false) { // Another attempt from the reg expression stuff
       reg_errors.push("Only use letters and add one space between first & last name.");
       name_errors.push("Only use letters and add one space between first & last name.");
    }
 
-   //username error checks
+   // Username error checks
    if (typeof user_data[username] != 'undefined') {
       reg_errors.push("Username already in use.");
       user_errors.push("Username already in use.");
@@ -166,7 +148,7 @@ app.post("/registration.html", function (request, response) {
       user_errors.push("Usernames may only have letters or numbers.");
    }
 
-   //password error checks
+   // Password error checks
    var fPass = request.body.password;
    var cPass = request.body.repeat_password;
 
@@ -179,13 +161,13 @@ app.post("/registration.html", function (request, response) {
       pass_errors.push("Passwords do not match.");
    }
 
-   //email error checks
+   // Email error checks
    if (/^[a-zA-Z0-9._]+@[a-zA-Z.]+\.[a-zA-Z]{2,3}$/.test(email) == false) { // Looked online for help on this
       reg_errors.push("Email format is invalid.");
       email_errors.push("Email format is invalid.");
    }
 
-   //help from Lab14 code; puts in data if there are no errors
+   // Help from Lab14 code; puts in data if there are no errors
    if (reg_errors.length == 0) {
       POST = request.body;
       username = POST["username"];
@@ -208,7 +190,3 @@ app.post("/registration.html", function (request, response) {
       response.redirect('./registration.html');
    }
 });
-
-//used code from Lab13
-app.use(express.static('./static'));
-var listener = app.listen(3000, () => { console.log('server started listening on port ' + listener.address().port) });

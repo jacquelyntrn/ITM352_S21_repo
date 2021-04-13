@@ -1,4 +1,4 @@
-/*var express = require('express');
+var express = require('express');
 const QueryString = require('qs');
 
 var app = express();
@@ -19,4 +19,4 @@ app.listen8080, function() {
 
 app.listen(8080, () => console.log(`listening on port 8080`)); // note the use of an anonymous function here
 
-//use nodemon, similar to live server and will automatically restart your server.*/
+//use nodemon, similar to live server and will automatically restart your server.

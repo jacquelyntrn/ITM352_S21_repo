@@ -1,0 +1,182 @@
+<script src="./products.js"> /* From the workshop powerpoint */
+    /*
+    Name: Eric Choy
+    Purpose: Assignment 2 invoice page layout
+    */
+</script>
+
+<script>
+    // Used code from Lab12 to get data from quantity textbox
+    let params = (new URL(document.location)).searchParams;
+
+    // If there is a user logged in
+    if (params.has('username')) {
+        alert(`Hello ${params.get('username')}. Thank you for your purchase.`);
+    } else { // If there is nobody logged in, direct to login page
+        alert('you must login or register first');
+        window.location = `./login.html${document.location.search}`;
+        window.stop;
+    }
+    var quantities = [];
+    // Borrowed from example from Assignment1
+    if (params.has('purchase_submit')) {
+        for (i = 0; i < products.length; i++) {
+            if (params.has(`quantity${i}`)) {
+                a_qty = params.get(`quantity${i}`);
+                quantities[i] = a_qty;
+            }
+        }
+    }
+    console.log(quantities);
+</script>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Noods Receipt</title>
+    <style>
+        body {
+            text-align: center;
+            background-image: url(./images/noodles.png);
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+            border: solid black;
+            background-color: lightblue;
+        }
+
+        th {
+            font-size: x-large;
+        }
+
+        td {
+            height: 30px;
+            padding-left: 10px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        h3 {
+            color: white;
+            font-size: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h3><script>
+            if (params.has('username')) { // Prints the username on the invoice if they are logged in
+                usr = params.get('username');
+                document.write(`${usr}'s invoice`)
+            }
+        </script></h3>
+        <h1>Zen Noods Receipt</h1>
+    </header>
+    <table border="2">
+        <tbody>
+            <tr id="invoice">
+                <th style="text-align: center;" width="20%">Item</th>
+                <th style="text-align: center;" width="11%">Quantity</th>
+                <th style="text-align: center;" width="13%">Price</th>
+                <th style="text-align: center;" width="54%">Extended Price</th>
+            </tr>
+
+            <script>
+                // Defining subtotal; same table as old SmartPhoneProducts
+                subTotal = 0;
+                for (i = 0; i < products.length; i++) {
+                    if (quantities[i] > 0) {
+                        // Product rows
+                        extended_price = quantities[i] * products[i].price
+                        subTotal += extended_price;
+                        document.write(`
+                        <tr>
+                            <td width="43%">${products[i].item}</td>
+                            <td align="center" width="11%">${quantities[i]}</td>
+                            <td width="13%">\$${products[i].price.toFixed(2)}</td>
+                            <td width="54%">\$${extended_price.toFixed(2)}</td>
+                        </tr>
+                        `);
+                    }
+                }
+
+                // Tax rate, similar to Invoice WOD
+                var salesTax = 0.0471;
+                var tax = subTotal * salesTax;
+
+                // Shipping calculation
+                if (subTotal > 0 && subTotal <= 100) {
+                    shipping = 10;  // If the subtotal is equal or under 100, shipping costs $10
+                } else {
+                    shipping = 0;   // If the subtotal is over 100, no shipping
+                }
+
+                // Grand total, similar to Invoice WOD
+                var grandTotal = subTotal + tax + shipping;
+            </script>
+
+            <tr>
+                <td colspan="3" width="100%">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;" colspan="3" width="67%">Sub-total</td>
+                <td width="54%">$
+                    <script>
+                        document.write(subTotal.toFixed(2));
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;" colspan="3" width="67%"><span style="font-family: arial;">Tax @
+                        <script>document.write(salesTax * 100)</script>%</span></td>
+                <td width="54%">$
+                    <script>
+                        document.write(tax.toFixed(2));
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;" colspan="3" width="67%"><span
+                        style="font-family: arial;">Shipping</span></td>
+                <td width="54%">$
+                    <script>
+                        document.write(shipping);
+                    </script>
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: center;" colspan="3" width="67%"><strong>Total</strong></td>
+                <td width="54%"><strong>$
+                        <script>
+                            document.write(grandTotal.toFixed(2));
+                        </script></strong></td>
+            </tr>
+            <td style="text-align: left;" colspan="4" width="121%"><strong>
+                    SHIPPING POLICY: <br>
+                    Subtotals $100 and less: $10. <br>
+                    Subtotals over $100: Free. <br>
+                </strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+<footer>
+    <br>
+    <strong>Thank you for your purchase!</strong>
+</footer>
+
+</html>
