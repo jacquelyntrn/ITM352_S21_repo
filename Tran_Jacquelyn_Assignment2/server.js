@@ -1,11 +1,8 @@
-//credit for code from Eric Choy
-
 const querystring = require('querystring');
 var express = require('express'); //express package
 var app = express();
 var myParser = require("body-parser"); //parser package
 var products = require('./static/products_data.js');
-const { request } = require('http');
 var fs = require('fs');
 var qs = require('querystring');
 const { response, query } = require('express');
@@ -43,37 +40,6 @@ app.post("/process_page", function (request, response, next) {
             response.redirect("./display.html?" + stringified);
         }
     }
-});
-
-app.get("/process_page", function (request, response, next) {
-   input_quantities = request.query //for User data
-   //check if quantity data is valid
-   params = request.query;
-   console.log(params);
-  
-   if (typeof params['purchase_submit'] != 'undefined') {
-      has_errors = false; //borrowed from example on Assignment1
-      total_qty = 0;
-      for (i = 0; i < products.length; i++) { //checking each of the products in the array
-         if (typeof params[`quantity${i}`] != 'undefined') {  //if not undefined then move on to the next if statement
-            a_qty = params[`quantity${i}`];
-            total_qty += a_qty;
-            if (!isNonNegInt(a_qty)) {
-               has_errors = true; //oops, invalid quantity
-            }
-         }
-      }
-      console.log(has_errors, total_qty);
-      qstr = querystring.stringify(request.query);
-      if (has_errors || total_qty == 0) {
-         //if quantity is not valid, send them back to the store
-         qstr = querystring.stringify(request.query);
-         response.redirect("display.html?" + qstr);
-         //if quantity is valid, send an invoice/login page
-      } else {
-         response.redirect("login.html?" + qstr);
-      }
-   }
 });
 
 //function isNonNegInt taken from Lab13
