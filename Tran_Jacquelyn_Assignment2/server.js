@@ -145,7 +145,7 @@ app.post("/register", function (request, response) {
    //check is username taken
 //borrowed from Lab14
    user_data[username] = {};
-   user_data[username].password = req.body['password'];
+   user_data[username].password = req.body['password'];//body requested must match the form
    user_data[username].password = req.body['repeat_password'];
    user_data[username].email = req.body['email'];
    fs.writeFileSync(filename, JSON.stringify(users_data)); //upload new user to user_data
