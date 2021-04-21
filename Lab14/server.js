@@ -26,17 +26,6 @@ app.all('*', function (request, response, next) {
    next();
 });
 
-//function isNonNegInt taken from Lab13
-function isNonNegInt(stringToCheck, returnErrors = false) { //checks whether the string is a valid integer
-   errors = []; //assume no errors at first
-   if (stringToCheck == "") stringToCheck = 0;
-   if (Number(stringToCheck) != stringToCheck) errors.push('Not a number!');
-   if (stringToCheck < 0) errors.push('Negative value!');
-   if (parseInt(stringToCheck) != stringToCheck) errors.push('Not an integer!');
-
-   return returnErrors ? errors : (errors.length == 0);
-}
-
 app.get("/login", function (request, response) {
    input_qty = request.query
    console.log(input_qty);
@@ -115,6 +104,8 @@ app.post('/process_register', function (req, res) {
    //upload new user to user_data
    fs.writeFileSync(ser_data_file, JSON.stringify(user_data));
 });
+
+
 
 //used code from Lab13
 app.use(express.static('./static'));
