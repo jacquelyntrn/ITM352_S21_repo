@@ -1,4 +1,4 @@
-/*server function designed like Daniel Port's Lab14 and borrowed coding from Rick Kazman for clarifications*/
+/*server function designed like Daniel Port's Lab14 and borrowed coding from Port_Kazman_Assignment2 for clarifications*/
 
 var express = require('express');
 var app = express();
@@ -9,7 +9,7 @@ app.use(myParser.urlencoded({ extended: true }));
 var fs = require('fs');
 var qs = require('querystring');
 
-var products = require('./static/products_data.js');
+var products = require('./products.json');
 const { Script } = require('vm');
 
 var user_quantity_data; //holds quantities from product selection
@@ -73,7 +73,7 @@ app.get("/login", function (request, response) {
 <input type="password" name="password" size="40" placeholder="enter password"><br />
 <input type="submit" value="Submit" id="submit">
 </form>
-<a href="register">Click here to regsiter<a>
+<a href="register">Click here to register<a>
 </body>
     `;
       response.send(str);
