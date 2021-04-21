@@ -1,14 +1,26 @@
-const querystring = require('querystring');
-var express = require('express'); //express package
+//server function designed like Daniel Port's assignment 2
+
+var express = require('express');
 var app = express();
-var myParser = require("body-parser"); //parser package
-var products = require('./static/products_data.js');
+
+var myParser = require("body-parser"); //parser package, needed forrecieving and redirecting the POST
+app.use(myParser.urlencoded({ extended: true }));
+
 var fs = require('fs');
 var qs = require('querystring');
-const { response, query } = require('express');
 
-var input_quantities = []; //for users that inputted quantities for products
+var products = require('./static/products_data.js');
+const { Script } = require('vm');
 
+var user_quantity_data; // make a global variable to hold the product selections until we get to the invoice
+
+//borrowed from Lab14
+var user_data_file = './user_data.json';
+if(fs.existsSync(user_data_file)) {
+   var file_stats = fs.statSync(user_data_file);
+   var user_data = JSON.parse(fs.readFileSync(user_data_file, 'utf-8'));
+} else {console.log (`${user_data_file} does not exist!`);
+}
 
 //code from Lab13
 app.all('*', function (request, response, next) {
@@ -16,165 +28,141 @@ app.all('*', function (request, response, next) {
    next();
 });
 
-app.use(myParser.urlencoded({ extended: true }));
-
-app.post("/process_page", function (request, response, next) {
-   let POST = request.body;
-    if (typeof POST['purchase_submit'] != 'undefined') { //reply undefined if info does not match 
-        var has_valid_qtys = true; //assumes that quantity is invalid 
-        var has_qtys = false; //assumes that quantity is valid
-        //create a loop to ensure quantities are valid
-        for (var i = 0; i < products.length; i++) {
-            var qty = POST[`quantity${i}`];
-            has_qtys = has_qtys || qty > 0
-            has_valid_qtys = has_valid_qtys && isNonNegInt(qty);
-        }
-        //if qtys are good, create an invoice 
-        const stringified = querystring.stringify(POST);
-        if (has_valid_qtys && has_qtys) {
-            //redirect to login
-            response.redirect("./login.html?" + stringified);
-            return; //stops the function 
-        } else {
-            //if not ready, go back to order page 
-            response.redirect("./display.html?" + stringified);
-        }
-    }
+app.get('/products', function (req, res, next) {
+   res.json(products);
 });
 
-//function isNonNegInt taken from Lab13
-function isNonNegInt(stringToCheck, returnErrors = false) { //checks whether the string is a valid integer
-   errors = []; //assume no errors at first
-   if (stringToCheck == "") stringToCheck = 0;
-   if (Number(stringToCheck) != stringToCheck) errors.push('Not a number!');
-   if (stringToCheck < 0) errors.push('Negative value!');
-   if (parseInt(stringToCheck) != stringToCheck) errors.push('Not an integer!');
+app.get('/purchase', function (req, res, next) {
+   user_quantity_data = req.query; // save for later
+   if (typeof req.query['purchase_submit'] != 'undefined') {
+       console.log(Date.now() + ': Purchase made from ip ' + req.ip + ' data: ' + JSON.stringify(req.query));
 
-   return returnErrors ? errors : (errors.length == 0);
-}
+       user_quantity_data = req.query; // get the query string data which has the form data
+       // form was submitted so check that quantities are valid then redirect to invoice if ok.
 
-//borrowed from Lab14
-var filename = "user_data.json";
+       has_errors = false; // assume quantities are valid from the start
+       total_qty = 0; // need to check if something was selected so we will look if the total > 0
+       for (i = 0; i < products.length; i++) {
+           if (user_quantity_data[`quantity${i}`] != 'undefined') {
+               a_qty = user_quantity_data[`quantity${i}`];
+               total_qty += a_qty;
+               if (!isNonNegInt(a_qty)) {
+                   has_errors = true; // oops, invalid quantity
+               }
+           }
+       }
+       // Now respond to errors or redirect to login if all is ok
+       if (has_errors || total_qty == 0) {
+           res.redirect('products_display.html?' + qs.stringify(user_quantity_data));
+       } else { // all good to go!
+           res.redirect('login');
+       }
 
-if (fs.existsSync(filename)) {
-   data = fs.readFileSync(filename, 'utf-8');
+   }
+});
 
-   user_data = JSON.parse(data);
-   console.log("User_data =", user_data);
-} else {
-   console.log("Sorry can't read file " + filename);
-   exit();
-}
+/*made another app.get command to be more organized than putting the simple log in form in else. follows else after checking from store for valid quantities*/
+app.get("/login", function (request, response) {
+   if (typeof user_quantity_data != 'undefined') {
+      //simple login form from server
+      str = `
+<body>
+<form action="" method="POST">
+<input type="text" name="username" size="40" placeholder="enter username" ><br />
+<input type="password" name="password" size="40" placeholder="enter password"><br />
+<input type="submit" value="Submit" id="submit">
+</form>
+<a href="register">Click here to regsiter<a>
+</body>
+    `;
+      response.send(str);
+   } else {
+      str = `
+    <head>
+    <script>
+        alert('You need to select some products before logging in');
+        
+        window.location = './display.html';
+    </script>
+    </head>
+        `;
+      response.send(str);
+   }
+});
 
-//used base from Lab14
-app.post("/login.html", function (request, response) {
-   console.log(input_quantities); //reports the user input in console
-   var id_username = request.body.username;
-   id_username = request.body.username.toLowerCase(); //makes username case insensitive
-   console.log("username = " + id_username) //tells us what the username tbey inputted is
-   if (typeof user_data[id_username] != 'undefined') {
-      if (user_data[id_username].password == request.body.password) {
-         quantityQstring = qs.stringify(input_quantities); //if the info is correct, make inputs a string
-         response.redirect('/invoice.html?' + quantityQstring + `&username=${id_username}`)
+app.post("/login", function (request, response) {
+   //process login form POST and redirect to logged in page if ok, back to login page if not
+   let username_entered = request.body["username"];
+   let password_entered = request.body["password"];
+   if(typeof user_data[username_entered] != 'undefined') {
+      if(user_data[username_entered] ['password'] == password_entered) {
+         user_quantity_data['username'] == username_entered;
+         //response.send(`${username_entered} is logged in`);
+         response.redirect('./invoice.html?' + qs.stringify(user_quantity_data));
       } else {
-         error = "Invalid password";
+         //response.send(`${username_entered} password wrong`);
+         response.redirect('/login');
       }
    } else {
-      error = "Invalid username";
+      response.send(`${username_entered} not found`);
    }
-   request.query.LoginError = error;   //in case of info errors, make the username sticky
-   request.query.StickyLoginUser = id_username;
-   qstring = querystring.stringify(request.query);
-   response.redirect('/login.html?error=' + error);
 });
 
-app.post("/registration.html", function (request, response) {
-
-   //make case insensitive
-   username = request.body.username.toLowerCase();
-   email = request.body.email.toLowerCase();
-
-   //turns quantity object into a string
-   quantityQstring = qs.stringify(input_quantities);
-
-   //variables for error messages
-   var reg_errors = [];
-   var name_errors = [];
-   var user_errors = [];
-   var pass_errors = [];
-   var email_errors = [];
-
-   //full name error checks
-   if (request.body.fullname > 30) { //check to see if name is too long
-      reg_errors.push("Name is too long. Please shorten below 30 characters.");
-      name_errors.push("Name is too long. Please shorten below 30 characters.");
+app.get("/register", function (request, response) {
+   if (typeof user_quantity_data != 'undefined') {
+      // Give a simple register form
+      str = `
+<body>
+<form action="" method="POST">
+<input type="text" name="username" size="40" placeholder="enter username" ><br />
+<input type="password" name="password" size="40" placeholder="enter password"><br />
+<input type="password" name="repeat_password" size="40" placeholder="enter password again"><br />
+<input type="email" name="email" size="40" placeholder="enter email"><br />
+<input type="submit" value="Submit" id="submit">
+</form>
+</body>
+    `;
+      response.send(str);
+   } else {
+      str = `
+        <head>
+        <script>
+            alert('You need to select some products before registering!');
+            
+            window.location = './display.html';
+        </script>
+        </head>
+            `;
+      response.send(str);
    }
-   if ((/[a-zA-Z]+[ ]+[a-zA-Z]+/).test(request.body.fullname) == false) { //another attempt from the reg expression stuff
-      reg_errors.push("Only use letters and add one space between first & last name.");
-      name_errors.push("Only use letters and add one space between first & last name.");
-   }
+});
 
-   //username error checks
-   if (typeof user_data[username] != 'undefined') {
-      reg_errors.push("Username already in use.");
-      user_errors.push("Username already in use.");
-   }
-   if (username.length < 4) {
-      reg_errors.push("Usernames must be at least 4 characters long.");
-      user_errors.push("Usernames must be at least 4 characters long.");
-   }
-   if (username.length > 10) {
-      reg_errors.push("Usernames can only have up to 10 characters.");
-      user_errors.push("Usernames can only have up to 10 characters.");
-   }
-   if ((/^[0-9a-zA-Z]+$/).test(username) == false) {
-      reg_errors.push("Usernames may only have letters or numbers.");
-      user_errors.push("Usernames may only have letters or numbers.");
-   }
+app.post("/register", function (request, response) {
+   // process a simple register form
+   username = req.body['username'];
+   // validate the user info before saving 
+   // check is username taken
 
-   //password error checks
-   var fPass = request.body.password;
-   var cPass = request.body.repeat_password;
-
-   if (request.body.password.length < 6) {
-      reg_errors.push("Password must be at least 6 characters long.");
-      pass_errors.push("Password must be at least 6 characters long.");
-   }
-   if (request.body.password != request.body.repeat_password) {
-      reg_errors.push("Passwords do not match.");
-      pass_errors.push("Passwords do not match.");
-   }
-
-   //email error checks
-   if (/^[a-zA-Z0-9._]+@[a-zA-Z.]+\.[a-zA-Z]{2,3}$/.test(email) == false) { // Looked online for help on this
-      reg_errors.push("Email format is invalid.");
-      email_errors.push("Email format is invalid.");
-   }
-
-   //help from Lab14 code; puts in data if there are no errors
-   if (reg_errors.length == 0) {
-      POST = request.body;
-      username = POST["username"];
-      user_data[username] = {};
-      user_data[username].fullname = POST["fullname"];
-      user_data[username].password = POST["password"];
-      user_data[username].email = POST["email"];
-
-      fs.writeFileSync(filename, JSON.stringify(user_data)); //saves/writes registaration data into the user_data json file
-      quantityQstring = qs.stringify(input_quantities); //turns quantity object into a string
-      response.redirect("/invoice.html?" + quantityQstring + `&username=${username}`); //if all good, send to invoice
-   }
-
-   if (reg_errors.length != 0) {
-      request.query.fullname = request.body.fullname;
-      request.query.username = request.body.username;
-      request.query.password = request.body.password;
-      request.query.repeat_password = request.body.repeat_password;
-      request.query.email = request.body.email;
-      response.redirect('./registration.html');
-   }
+   user_data[username] = {};
+   user_data[username].password = req.body['password'];
+   user_data[username].password = req.body['repeat_password'];
+   user_data[username].email = req.body['email'];
+   fs.writeFileSync(filename, JSON.stringify(users_data));
+   console.log("Saved: " + users_data);
+   user_quantity_data['username'] = username; // add the username to the data that will be sent to the invoice so the user can be identified with this transient data
+   response.redirect('/invoice.html?' + qs.stringify(user_quantity_data)); // transient data passed to invoice in a query string
 });
 
 //used code from Lab13
-app.use(express.static('./static'));
-var listener = app.listen(3000, () => { console.log('server started listening on port ' + listener.address().port) });
+app.use(express.static(__dirname + '/static'));
+var listener = app.listen(8080, () => { console.log('server started listening on port ' + listener.address().port) });
+
+// helper functions
+function isNonNegInt(q, return_errors = false) {
+   errors = []; // assume no errors at first
+   if (q == '') q = 0; // handle blank inputs as if they are 0
+   if (Number(q) != q) errors.push('<font color="red">Not a number!</font>'); // Check if string is a number value
+   else if (q < 0) errors.push('<font color="red">Negative value!</font>'); // Check if it is non-negative
+   else if (parseInt(q) != q) errors.push('<font color="red">Not an integer!</font>'); // Check that it is an integer
+   return return_errors ? errors : (errors.length == 0);
+}
