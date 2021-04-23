@@ -21,7 +21,7 @@ app.use(session({secret: "ITM352 rocks!"})); //encryption key
 
 //code from Lab13
 app.all('*', function (request, response, next) {
-   console.log(req);
+   console.log(request);
    console.log(request.method + ' to path ' + request.path);
    next();
 });
@@ -31,7 +31,7 @@ app.get('/set_cookie', function (request, response, next) {
    let my_name = 'Jackie';
    response.cookie('my_name', my_name, {expire: 5000 + Date.now()});
    now = new Date();
-   response.send('Cookie for ${my_name} sent');
+   response.send('Cookie for ${request.cookie["my_name"]} sent');
    next();
 });
 

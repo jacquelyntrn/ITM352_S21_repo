@@ -16,10 +16,11 @@ var user_quantity_data; //holds quantities from product selection
 
 //borrowed from Lab14
 var user_data_file = './user_data.json';
-if(fs.existsSync(user_data_file)) {
+if (fs.existsSync(user_data_file)) {
    var file_stats = fs.statSync(user_data_file);
    var user_data = JSON.parse(fs.readFileSync(user_data_file, 'utf-8'));
-} else {console.log (`${user_data_file} does not exist!`);
+} else {
+   console.log(`${user_data_file} does not exist!`);
 }
 
 //code from Lab13
@@ -28,35 +29,35 @@ app.all('*', function (request, response, next) {
    next();
 });
 
-app.get('/products', function (req, res, next) {
+app.get('/products', function (request, res, next) {
    res.json(products);
 });
 
 //changed to purchase because this code is verifying before going to login
-app.get('/purchase', function (req, res, next) {
-   user_quantity_data = req.query; // save for later
-   if (typeof req.query['purchase_submit'] != 'undefined') {
-       console.log(Date.now() + ': Purchase made from ip ' + req.ip + ' data: ' + JSON.stringify(req.query));
+app.get('/purchase', function (request, res, next) {
+   user_quantity_data = request.query; // save for later
+   if (typeof request.query['purchase_submit'] != 'undefined') {
+      console.log(Date.now() + ': Purchase made from ip ' + request.ip + ' data: ' + JSON.stringify(request.query));
 
-       user_quantity_data = req.query; // get the query string data which has the form data
+      user_quantity_data = request.query; // get the query string data which has the form data
 
-       has_errors = false; //borrowed from example on Assignment1
-       total_qty = 0; //need to check if something was selected so we will look if the total > 0
-       for (i = 0; i < products.length; i++) { //checking each of the products through a loop
-           if (user_quantity_data[`quantity${i}`] != 'undefined') { //if not undefined then move on to the next if statement
-               a_qty = user_quantity_data[`quantity${i}`];
-               total_qty += a_qty;
-               if (!isNonNegInt(a_qty)) {
-                   has_errors = true; //invalid quantity
-               }
-           }
-       }
-       //if quantity is not valid, send them back to the store
-       if (has_errors || total_qty == 0) {
-           res.redirect('display.html?' + qs.stringify(user_quantity_data));
-       } else { //if quantity is valid, send an invoice/login page
-           res.redirect('login');
-       }
+      has_errors = false; //borrowed from example on Assignment1
+      total_qty = 0; //need to check if something was selected so we will look if the total > 0
+      for (i = 0; i < products.length; i++) { //checking each of the products through a loop
+         if (user_quantity_data[`quantity${i}`] != 'undefined') { //if not undefined then move on to the next if statement
+            a_qty = user_quantity_data[`quantity${i}`];
+            total_qty += a_qty;
+            if (!isNonNegInt(a_qty)) {
+               has_errors = true; //invalid quantity
+            }
+         }
+      }
+      //if quantity is not valid, send them back to the store
+      if (has_errors || total_qty == 0) {
+         res.redirect('display.html?' + qs.stringify(user_quantity_data));
+      } else { //if quantity is valid, send an invoice/login page
+         res.redirect('login');
+      }
 
    }
 });
@@ -95,8 +96,8 @@ app.post("/login", function (request, response) {
    //process login form POST, looks for matching username and password
    let username_entered = request.body["username"];
    let password_entered = request.body["password"];
-   if(typeof user_data[username_entered] != 'undefined') {
-      if(user_data[username_entered] ['password'] == password_entered) {
+   if (typeof user_data[username_entered] != 'undefined') {
+      if (user_data[username_entered]['password'] == password_entered) {
          user_quantity_data['username'] == username_entered;
          //response.send(`${username_entered} is logged in`);
          response.redirect('./invoice.html?' + qs.stringify(user_quantity_data));
@@ -140,14 +141,14 @@ app.get("/register", function (request, response) {
 
 //add a new user to the database the json
 app.post("/register", function (request, response) {
-   username = req.body['username'];
+   username = request.body['username'];
    //validate the user info before saving 
    //check is username taken
-//borrowed from Lab14
+   //borrowed from Lab14
    user_data[username] = {};
-   user_data[username].password = req.body['password'];//body requested must match the form
-   user_data[username].password = req.body['repeat_password'];
-   user_data[username].email = req.body['email'];
+   user_data[username].password = request.body['password'];//body requested must match the form
+   user_data[username].password = request.body['repeat_password'];
+   user_data[username].email = request.body['email'];
    fs.writeFileSync(filename, JSON.stringify(users_data)); //upload new user to user_data
    console.log("Saved: " + users_data);
    user_quantity_data['username'] = username; //add the username to the data that will be sent to the invoice so the user can be identified with this transient data

@@ -10,7 +10,7 @@ var fs = require('fs');
 var qs = require('querystring');
 const { response, query } = require('express');
 
-var input_qty = []; //for users that inputted quantities for products
+var saved_quantity = []; //for users that inputted quantities for products
 
 //borrowed from Lab14
 var user_data_file = './user_data.json';
@@ -27,14 +27,14 @@ app.all('*', function (request, response, next) {
 });
 
 app.get("/login", function (request, response) {
-   input_qty = request.query
-   console.log(input_qty);
-   if (typeof input_qty['purchase_submit'] != 'undefined') {
+   saved_quantity = request.query
+   console.log(saved_quantity);
+   if (typeof saved_quantity['purchase_submit'] != 'undefined') {
       has_errors = false; //borrowed from example on Assignment1
       total_qty = 0;
       for (i = 0; i < products.length; i++) { //checking each of the products in the array
-         if (typeof input_qty[`quantity${i}`] != 'undefined') {  //if not undefined then move on to the next if statement
-            a_qty = input_qty[`quantity${i}`];
+         if (typeof saved_quantity[`quantity${i}`] != 'undefined') {  //if not undefined then move on to the next if statement
+            a_qty = saved_quantity[`quantity${i}`];
             total_qty += a_qty;
             if (!isNonNegInt(a_qty)) {
                has_errors = true; //oops, invalid quantity

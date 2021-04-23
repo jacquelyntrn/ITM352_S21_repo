@@ -19,8 +19,18 @@ app.get("/login", function (request, response) {
  });
 
 app.post("/login", function (request, response) {
-    // Process login form POST and redirect to logged in page if ok, back to login page if not
-
-});
+    //process login form POST and redirect to logged in page if ok, back to login page if not
+    let username_entered = request.body["username"];
+    let password_entered = request.body["password"];
+    if(typeof user_data[username_entered] != 'undefined') {
+          if(user_data[username_entered] ['password'] == password_entered) {
+             response.send(`${username_entered} is logged in`);
+          } else {
+            response.redirect('/login');
+          }
+       } else {
+          response.redirect('/register');
+       }
+    });
 
 app.listen(8080, () => console.log(`listening on port 8080`));
