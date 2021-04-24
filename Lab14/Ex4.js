@@ -73,11 +73,15 @@ app.get("/login", function (request, response) {
  
  app.post('/register', function (request, response) {
     //add a new user to the database the json
-    username = request.body['username'];
-    user_data[username] = {};
-    user_data[username].password = request.body['password'];
-    user_data[username].password = request.body['repeat_password'];
-    user_data[username].email = request.body['email'];
-    //upload new user to user_data
-    fs.writeFileSync(ser_data_file, JSON.stringify(user_data));
- });
+    if (
+    username = request.body['username'],
+    user_data[username] = {},
+    user_data[username].password = request.body['password'],
+    user_data[username].password = request.body['repeat_password'],
+    user_data[username].email = request.body['email']
+    ) {
+        fs.writeFileSync(ser_data_file, JSON.stringify(user_data));
+        console.log("user_data[username] is registered.")
+    } else {
+        response.redirect('/register');
+    }});
