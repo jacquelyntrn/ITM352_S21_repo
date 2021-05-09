@@ -1,35 +1,70 @@
-  
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-        <title>Get started</title>
 
-        <style>
-            body {
-                text-align: center;
-                background: rgb(255, 255, 255);
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>Get started</title>
+
+    <style>
+        body {
+            text-align: center;
+            background: rgb(255, 255, 255);
+        }
+
+        img {
+            border: 1px solid rgb(204, 204, 204);
+            /*gray border*/
+            /*border-radius: 4px; makes it rounded*/
+            padding: 5px;
+        }
+
+        /*add a hover effect (blue shadow)*/
+        img:hover {
+            box-shadow: 0 0 5px 1px black;
+        }
+
+        .mySlides {
+            display: none;
+            width: 200px;
+        }
+        h3 {
+            margin-top: -10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- borrowed from SmartPhoneProducts index code -->
+    <h1><strong>Matcha Madness</strong></h1>
+    <h3>Welcome! Click the image to enter our store.</h3>
+    <!-- borrowed from W3 schools W3.CSS Slideshow   -->
+    <div class="w3-content w3-section" style="max-width:600px">
+        <img class="mySlides" src="./images/pocky-matcha.jpg" style="width: 600px; height: 600px;">
+        <img class="mySlides" src="./images/cake.jpg" style="width:100%">
+        <img class="mySlides" src="./images/mochi.jpg" style="width:100%">
+    </div>
+
+    <a href="./display.html">
+        <script>
+            var myIndex = 0;
+            carousel();
+
+            function carousel() {
+                var i;
+                var x = document.getElementsByClassName("mySlides");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                myIndex++;
+                if (myIndex > x.length) { myIndex = 1 }
+                x[myIndex - 1].style.display = "block";
+                setTimeout(carousel, 2000); // Change image every 2 seconds
             }
+        </script>
+    </a>
+    <h3>Here are some of our featured products.</h3>
     
-            img {
-                border: 1px solid #ddd; /*gray border*/
-                /*border-radius: 4px; makes it rounded*/
-                padding: 5px;
-            }
-    
-            /*add a hover effect (blue shadow)*/
-            img:hover {
-                box-shadow: 0 0 5px 1px black;
-            }
-        </style>
-    </head>
-    <body>
-        <script> //borrowed from SmartPhoneProducts index code</script>
-        <h1><strong>Welcome!</strong></h1>
-        <a href="./display.html">
-            <img src="./images/matcha-bkg.jpg">
-        </a>
-        <h3>Click the image to enter our store.</h3>
-    </body>
-    </html>
+</body>
+
+</html>
