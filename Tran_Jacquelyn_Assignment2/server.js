@@ -116,10 +116,10 @@ app.get("/register", function (request, response) {
       str = `
 <body>
 <form action="" method="POST">
-<input type="text" name="username" size="40" placeholder="enter username" ><br />
-<input type="password" name="password" size="40" placeholder="enter password"><br />
-<input type="password" name="repeat_password" size="40" placeholder="enter password again"><br />
-<input type="email" name="email" size="40" placeholder="enter email"><br />
+<input type="text" name="username" size="40" placeholder="Enter username" ><br />
+<input type="password" name="password" size="40" placeholder="Enter password"><br />
+<input type="password" name="repeat_password" size="40" placeholder="Enter password again"><br />
+<input type="email" name="email" size="40" placeholder='Enter email "example@mail.com'><br />
 <input type="submit" value="Submit" id="submit">
 </form>
 </body>
@@ -142,17 +142,71 @@ app.get("/register", function (request, response) {
 //add a new user to the database the json
 app.post("/register", function (request, response) {
    username = request.body['username'];
+   email = request.body['email'];
+
+   var reg_errors = [];
+   var user_errors = [];
+   var pass_errors = [];
+   var email_errors = [];
+
+   if (typeof user_data[username] != 'undefined') {
+      reg_errors.push("Username already in use.");
+      user_errors.push("Username already in use.");
+   }
+
+   if (username.length < 4) {
+      reg_errors.push("Usernames must be at least 4 characters long.");
+      user_errors.push("Usernames must be at least 4 characters long.");
+   }
+
+   if (username.length > 10) {
+      reg_errors.push("Usernames can only have up to 10 characters.");
+      user_errors.push("Usernames can only have up to 10 characters.");
+   }
+
+   if ((/^[0-9a-zA-Z]+$/).test(username) == false) {
+      reg_errors.push("Usernames may only have letters or numbers.");
+      user_errors.push("Usernames may only have letters or numbers.");
+   }
+   // Password error checks
+   var fPass = request.body.password;
+   var cPass = request.body.repeat_password;
+
+   if (request.body.password.length < 6) {
+      reg_errors.push("Password must be at least 6 characters long.");
+      pass_errors.push("Password must be at least 6 characters long.");
+   }
+   if (request.body.password != request.body.repeat_password) {
+      reg_errors.push("Passwords do not match.");
+      pass_errors.push("Passwords do not match.");
+   }
+
+   // Email error checks
+   if (/^[a-zA-Z0-9._]+@[a-zA-Z.]+\.[a-zA-Z]{2,3}$/.test(email) == false) { // Looked online for help on this
+      reg_errors.push("Email format is invalid.");
+      email_errors.push("Email format is invalid.");
+   }
+
    //validate the user info before saving 
    //check is username taken
-   //borrowed from Lab14
-   user_data[username] = {};
-   user_data[username].password = request.body['password'];//body requested must match the form
-   user_data[username].password = request.body['repeat_password'];
-   user_data[username].email = request.body['email'];
-   fs.writeFileSync(filename, JSON.stringify(users_data)); //upload new user to user_data
-   console.log("Saved: " + users_data);
-   user_quantity_data['username'] = username; //add the username to the data that will be sent to the invoice so the user can be identified with this transient data
-   response.redirect('/invoice.html?' + qs.stringify(user_quantity_data)); //transient data passed to invoice in a query string, code borrowed from Rick Kazman. learning to understand transient data
+   if (reg_errors.length != 0) {//borrowed from Lab14
+      user_data[username] = {};
+      user_data[username].password = request.body['password'];//body requested must match the form
+      user_data[username].password = request.body['repeat_password'];
+      user_data[username].email = request.body['email'];
+      fs.writeFileSync(user_data_file, JSON.stringify(user_data)); //upload new user to user_data
+      console.log("Saved: " + user_data);
+      user_quantity_data['username'] = username; //add the username to the data that will be sent to the invoice so the user can be identified with this transient data
+      response.redirect('/invoice.html?' + qs.stringify(user_quantity_data)); //transient data passed to invoice in a query string, code borrowed from Rick Kazman. learning to understand transient data      
+   }
+   if (reg_errors.length != 0) {
+      request.query.fullname = request.body.fullname;
+      request.query.username = request.body.username;
+      request.query.password = request.body.password;
+      request.query.repeat_password = request.body.repeat_password;
+      request.query.email = request.body.email;
+      response.redirect('./registration.html');
+   }
 });
 
 //used code from Lab13
