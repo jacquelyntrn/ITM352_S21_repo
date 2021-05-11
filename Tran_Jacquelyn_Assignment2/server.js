@@ -1,173 +1,134 @@
-/*server function designed like Daniel Port's Lab14 and borrowed coding from Port_Kazman_Assignment2 for clarifications*/
+/*majority of the code was borrowed from Labs 13 and 14. changed the design of the website to have a seperate login and register page instead of having it on the server. code for the registration check is credited to Eric Choy (github: @choyeric)*/
 
-var express = require('express');
+var querystring = require('querystring');
+var express = require('express'); //express package
 var app = express();
-
 var myParser = require("body-parser"); //parser package, needed for recieving and redirecting the POST
-app.use(myParser.urlencoded({ extended: true }));
-
+var products = require('./products.json');
+const { request } = require('http');
 var fs = require('fs');
 var qs = require('querystring');
+const { response, query } = require('express');
 
-var products = require('./products.json');
-const { Script } = require('vm');
+var user_quantity_data = []; //holds quantities from product selection
 
-var user_quantity_data; //holds quantities from product selection
-
-//borrowed from Lab14
-var user_data_file = './user_data.json';
-if (fs.existsSync(user_data_file)) {
-   var file_stats = fs.statSync(user_data_file);
-   var user_data = JSON.parse(fs.readFileSync(user_data_file, 'utf-8'));
-} else {
-   console.log(`${user_data_file} does not exist!`);
-}
-
-//code from Lab13
+//code from Lab 13
 app.all('*', function (request, response, next) {
    console.log(request.method + ' to path ' + request.path);
    next();
 });
 
-app.get('/products', function (request, res, next) {
-   res.json(products);
-});
+app.use(myParser.urlencoded({ extended: true }));
 
-//changed to purchase because this code is verifying before going to login
-app.get('/purchase', function (request, res, next) {
-   user_quantity_data = request.query; // save for later
-   if (typeof request.query['purchase_submit'] != 'undefined') {
-      console.log(Date.now() + ': Purchase made from ip ' + request.ip + ' data: ' + JSON.stringify(request.query));
-
-      user_quantity_data = request.query; // get the query string data which has the form data
-
-      has_errors = false; //borrowed from example on Assignment1
-      total_qty = 0; //need to check if something was selected so we will look if the total > 0
-      for (i = 0; i < products.length; i++) { //checking each of the products through a loop
-         if (user_quantity_data[`quantity${i}`] != 'undefined') { //if not undefined then move on to the next if statement
-            a_qty = user_quantity_data[`quantity${i}`];
+app.get("/purchase", function (request, response) {
+   user_quantity_data = request.query //for user 
+   //check if quantity data is valid
+   params = request.query;//for input data
+   console.log(params);
+   if (typeof params['purchase_submit'] != 'undefined') {
+      console.log(Date.now() + ': Purchase made from ip ' + request.ip + ' data: ' + JSON.stringify(params));
+      has_errors = false; //from example Assignment1
+      total_qty = 0;
+      for (i = 0; i < products.length; i++) { //checking the product quantities into an array
+         if (typeof params[`quantity${i}`] != 'undefined') {  //user doesn't want a certain product or 'undefined'
+            a_qty = params[`quantity${i}`];
             total_qty += a_qty;
             if (!isNonNegInt(a_qty)) {
-               has_errors = true; //invalid quantity
+               has_errors = true; //invalid, error page on store
             }
          }
       }
-      //if quantity is not valid, send them back to the store
+      console.log(has_errors, total_qty);
+      qStr = querystring.stringify(request.query);
       if (has_errors || total_qty == 0) {
-         res.redirect('display.html?' + qs.stringify(user_quantity_data));
-      } else { //if quantity is valid, send an invoice/login page
-         res.redirect('login');
-      }
-
-   }
-});
-
-//borrowed from Lab14
-/*made another app.get command to be more organized than putting the simple log in form in else. follows else after checking from store for valid quantities*/
-app.get("/login", function (request, response) {
-   if (typeof user_quantity_data != 'undefined') {
-      //simple login form from server
-      str = `
-<body>
-<form action="" method="POST">
-<input type="text" name="username" size="40" placeholder="enter username" ><br />
-<input type="password" name="password" size="40" placeholder="enter password"><br />
-<input type="submit" value="Submit" id="submit">
-</form>
-<a href="register">Click here to register<a>
-</body>
-    `;
-      response.send(str);
-   } else {
-      str = `
-    <head>
-    <script>
-        alert('You need to select some products before logging in');
-        
-        window.location = './display.html';
-    </script>
-    </head>
-        `;
-      response.send(str);
-   }
-});
-
-app.post("/login", function (request, response) {
-   //process login form POST, looks for matching username and password
-   let username_entered = request.body["username"];
-   let password_entered = request.body["password"];
-   if (typeof user_data[username_entered] != 'undefined') {
-      if (user_data[username_entered]['password'] == password_entered) {
-         user_quantity_data['username'] == username_entered;
-         //response.send(`${username_entered} is logged in`);
-         response.redirect('./invoice.html?' + qs.stringify(user_quantity_data));
+         //warning invalid error on store
+         qStr = querystring.stringify(request.query);
+         response.redirect("store.html?" + qStr);
+         //valid, goes to login first
       } else {
-         //response.send(`${username_entered} password wrong`);
-         response.redirect('/login');
+         response.redirect("login.html?" + qStr);
+      }
+   }
+});
+
+//code from Lab14
+var filename = "user_data.json"; //filename of file holding user data
+
+if (fs.existsSync(filename)) {
+   data = fs.readFileSync(filename, 'utf-8');
+
+   user_register_data = JSON.parse(data);
+   console.log("user_register_data =", user_register_data);
+} else {
+   console.log("Sorry can't read file " + filename);
+   exit();
+}
+
+//learned from class on Lab14
+app.post("/login.html", function (request, response) {
+   console.log(user_quantity_data); //can see user in console
+   var username_entered = request.body.username;
+   username_entered = request.body.username.toLowerCase(); //makes username case insensitive
+   console.log("username = " + username_entered) //see in the console
+   if (typeof user_register_data[username_entered] != 'undefined') {
+      if (user_register_data[username_entered].password == request.body.password) {
+         quantityQstring = qs.stringify(user_quantity_data); //make the information if correct into a string to be used in the next page
+         response.redirect('/invoice.html?' + quantityQstring + `&username=${username_entered}`)
+      } else {
+         error = "Invalid password";
       }
    } else {
-      response.send(`${username_entered} not found`);
+      error = "Invalid username";
    }
+   request.query.LoginError = error;   //sticky test with the username
+   request.query.StickyLoginUser = username_entered;
+   qString = querystring.stringify(request.query);
+   response.redirect('/login.html?error=' + error);
 });
 
-app.get("/register", function (request, response) {
-   if (typeof user_quantity_data != 'undefined') {
-      //give a simple register form, borrowed from Lab14
-      str = `
-<body>
-<form action="" method="POST">
-<input type="text" name="username" size="40" placeholder="Enter username" ><br />
-<input type="password" name="password" size="40" placeholder="Enter password"><br />
-<input type="password" name="repeat_password" size="40" placeholder="Enter password again"><br />
-<input type="email" name="email" size="40" placeholder='Enter email "example@mail.com'><br />
-<input type="submit" value="Submit" id="submit">
-</form>
-</body>
-    `;
-      response.send(str);
-   } else {
-      str = `
-        <head>
-        <script>
-            alert('You need to select some products before registering!');
-            
-            window.location = './display.html';
-        </script>
-        </head>
-            `;
-      response.send(str);
-   }
-});
+app.post("/registration.html", function (request, response) {
+   // Make case insensitive
+   username = request.body.username.toLowerCase();
+   email = request.body.email.toLowerCase();
 
-//add a new user to the database the json
-app.post("/register", function (request, response) {
-   username = request.body['username'];
-   email = request.body['email'];
+   // Turns quantity object into a string
+   quantityQstring = qs.stringify(user_quantity_data);
 
+   // Variables for error messages
    var reg_errors = [];
+   var name_errors = [];
    var user_errors = [];
    var pass_errors = [];
    var email_errors = [];
 
-   if (typeof user_data[username] != 'undefined') {
+   // Full name error checks
+   if (request.body.fullname > 30) { // Check to see if name is too long
+      reg_errors.push("Name is too long. Please shorten below 30 characters.");
+      name_errors.push("Name is too long. Please shorten below 30 characters.");
+   }
+   if ((/[a-zA-Z]+[ ]+[a-zA-Z]+/).test(request.body.fullname) == false) { // Another attempt from the reg expression stuff
+      reg_errors.push("Only use letters and add one space between first & last name.");
+      name_errors.push("Only use letters and add one space between first & last name.");
+   }
+
+   // Username error checks
+   if (typeof user_register_data[username] != 'undefined') {
       reg_errors.push("Username already in use.");
       user_errors.push("Username already in use.");
    }
-
    if (username.length < 4) {
       reg_errors.push("Usernames must be at least 4 characters long.");
       user_errors.push("Usernames must be at least 4 characters long.");
    }
-
    if (username.length > 10) {
       reg_errors.push("Usernames can only have up to 10 characters.");
       user_errors.push("Usernames can only have up to 10 characters.");
    }
-
    if ((/^[0-9a-zA-Z]+$/).test(username) == false) {
       reg_errors.push("Usernames may only have letters or numbers.");
       user_errors.push("Usernames may only have letters or numbers.");
    }
+
    // Password error checks
    var fPass = request.body.password;
    var cPass = request.body.repeat_password;
@@ -187,18 +148,20 @@ app.post("/register", function (request, response) {
       email_errors.push("Email format is invalid.");
    }
 
-   //validate the user info before saving 
-   //check is username taken
-   if (reg_errors.length != 0) {//borrowed from Lab14
-      user_data[username] = {};
-      user_data[username].password = request.body['password'];//body requested must match the form
-      user_data[username].password = request.body['repeat_password'];
-      user_data[username].email = request.body['email'];
-      fs.writeFileSync(user_data_file, JSON.stringify(user_data)); //upload new user to user_data
-      console.log("Saved: " + user_data);
-      user_quantity_data['username'] = username; //add the username to the data that will be sent to the invoice so the user can be identified with this transient data
-      response.redirect('/invoice.html?' + qs.stringify(user_quantity_data)); //transient data passed to invoice in a query string, code borrowed from Rick Kazman. learning to understand transient data      
+   // Help from Lab14 code; puts in data if there are no errors
+   if (reg_errors.length == 0) {
+      POST = request.body;
+      username = POST["username"];
+      user_register_data[username] = {};
+      user_register_data[username].fullname = POST["fullname"];
+      user_register_data[username].password = POST["password"];
+      user_register_data[username].email = POST["email"];
+
+      fs.writeFileSync(filename, JSON.stringify(user_register_data)); //saves/writes registaration data into the user_register_data json file
+      console.log("Saved: " + user_register_data);
+      response.redirect("/invoice.html?" + quantityQstring + `&username=${username}`); //if all good, send to invoice
    }
+
    if (reg_errors.length != 0) {
       request.query.fullname = request.body.fullname;
       request.query.username = request.body.username;
@@ -208,12 +171,11 @@ app.post("/register", function (request, response) {
       response.redirect('./registration.html');
    }
 });
-
 //used code from Lab13
 app.use(express.static(__dirname + '/static'));//dirname is directory name
 var listener = app.listen(8080, () => { console.log('server started listening on port ' + listener.address().port) });
 
-// helper functions
+//helper functions
 function isNonNegInt(q, return_errors = false) {
    errors = []; // assume no errors at first
    if (q == '') q = 0; // handle blank inputs as if they are 0

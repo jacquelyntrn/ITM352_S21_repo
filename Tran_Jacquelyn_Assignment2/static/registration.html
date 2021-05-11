@@ -1,0 +1,67 @@
+<script>
+    /**/
+
+    window.onload = function () {
+        let params = (new URL(document.location)).searchParams;
+
+        // Trying to make textboxes sticky
+        if (params.has('reg_submit')) {
+            reguser = document.getElementsByName(username);
+            register['username'].value = reguser;
+        }
+    }
+</script>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MM Registration</title>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href="style-display.css" rel="stylesheet">
+</head>
+
+<body>
+    <script>
+        function infoCheck() {
+            var fPass = register.password.value
+            var cPass = register.repeat_password.value
+
+            // This function checks to see if the information is valid for username and password
+            if (fPass != cPass) {
+                alert("Passwords do not match.");
+            }
+            if (register.username.value != 'undefined') {
+                alert("Username taken. Please try another");
+            }
+        }
+    </script>
+
+    <form name="register" action="" method="POST">
+        <div class="container">
+            <h3>Register your account with Matcha Madness!</h3>
+            <label id="fullname_l">First and Last Name</label>
+            <input type="text" pattern="[a-zA-Z]+[ ]+[a-zA-Z]+" placeholder="Only letters allowed. Max 30 characters."
+                name="fullname" required>
+            <label id="username_l">Username</label>
+            <input type="text" pattern=".[a-z0-9]{3,10}"
+                placeholder="Only letters and numbers allowed. 4-10 characters long." name="username" required>
+            <label id="password_l">Password</label>
+            <input type="password" pattern=".{6,}" name="password"
+                placeholder="Minimum 6 characters long (case sensitive)" required>
+            <label id="repeat_password">Re-enter your password</label>
+            <input type="password" pattern=".{6,}" name="repeat_password" placeholder="Confirm password" required>
+            <label id="email_l">E-mail Address</label>
+            <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" name="email"
+                placeholder='Enter e-mail "example@mail.com' required>
+            <input type="submit" value="Register" name="reg_submit" id="reg_submit" onclick="infoCheck()">
+    </form>
+    </div>
+
+    <a href="login.html">Already have an account? Sign in!</a>
+
+</body>
+
+</html>
