@@ -1,32 +1,25 @@
-
 <head>
     <script src="./functions.js"></script>
     <script>
+
         // get the query string
         let params = (new URL(document.location)).searchParams;
         if (params.has('products_key')) {
-            var this_product_key = params.get('products_key');
+            var products_key = params.get('products_key');
         } else {
             document.write('no products key in query string');
             document.stop;
         }
 
         var products_data;
-        loadJSON('products.json', function (response) {
+        loadJSON('get_products_data', function (response) {
             // Parsing JSON string into object
             products_data = JSON.parse(response);
         });
     </script>
 </head>
 <center>
-    <a href='index.html'>HOME<a>&nbsp&nbsp&nbsp;
-            <script>
-                // This makes a navigation bar to other product pages
-                for (products_key in products_data) {
-                    if (products_key == this_product_key) continue;
-                    document.write(`<a href='./display_products.html?products_key=${products_key}'>${products_key}<a>&nbsp&nbsp&nbsp;`);
-                }
-            </script>
+    <script> nav_bar(products_key, products_data);</script>
 </center>
 
 <script>

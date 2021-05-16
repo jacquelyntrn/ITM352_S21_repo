@@ -4,10 +4,9 @@ var querystring = require('querystring');
 var express = require('express'); //express package
 var app = express();
 var myParser = require("body-parser"); //parser package, needed for recieving and redirecting the POST
-const { request } = require('http');
+
 var fs = require('fs');
 var qs = require('querystring');
-const { response, query } = require('express');
 
 var session = require('express-session');
 var products_data = require('./products.json');
@@ -20,12 +19,11 @@ app.all('*', function (request, response, next) {
    // need to initialize an object to store the cart in the session. We do it when there is any request so that we don't have to check it exists
    // anytime it's used
    console.log(request.method + ' to path ' + request.path);
-   if (typeof request.session.cart == 'undefined') { request.session.cart = {}; }
    next();
  });
 
 app.use(myParser.urlencoded({ extended: true }));
-app.use(session({secret: "ITM352 rocks!",resave: false, saveUninitialized: true}));
+app.use(session({secret: "MySecretKey", resave: true, saveUninitialized: true}));
 
 app.get("/get_products_data", function (request, response) {
    response.json(products_data);
@@ -34,7 +32,7 @@ app.get("/get_products_data", function (request, response) {
  app.get("/add_to_cart", function (request, response) {
    var products_key = request.query['products_key']; // get the product key sent from the form post
    var quantities = request.query['quantities'].map(Number); // Get quantities from the form post and convert strings from form post to numbers
-   request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
+   //request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
    response.redirect('./cart.html');
  });
  

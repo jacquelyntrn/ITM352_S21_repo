@@ -1,27 +1,33 @@
-[
-    {
-        "name" : "Softserve",
-        "price" : 8.00,
-        "img" : "softserve.jpg"
-    },
-    {
-        "name" : "Mochi Ice Cream",
-        "price" : 18.00,
-        "img" : "mochi.jpg"
-    },
-    {
-        "name" : "Pocky",
-        "price" : 11.00,
-        "img" : "pocky-matcha.jpg"
-    },
-    {
-        "name" : "Cake",
-        "price" : 20.00,
-        "img" : "cake.jpg"
-    },
-    {
-        "name" : "Kit Kat",
-        "price" : 3.50,
-        "img" : "kitkat.jpg"
-    }
-]
+{
+    "Icecream": [
+        {
+            "name": "Softserve",
+            "price": 8.00,
+            "img": "softserve.jpg"
+        },
+        {
+            "name": "Mochi Ice Cream",
+            "price": 18.00,
+            "img": "mochi.jpg"
+        }
+    ],
+    "Snacks": [
+        {
+            "name": "Pocky",
+            "price": 11.00,
+            "img": "pocky-matcha.jpg"
+        },
+        {
+            "name": "Kit Kat",
+            "price": 3.50,
+            "img": "kitkat.jpg"
+        }
+    ],
+    "Deserts": [
+        {
+            "name": "Cake",
+            "price": 20.00,
+            "img": "cake.jpg"
+        }
+    ]
+}

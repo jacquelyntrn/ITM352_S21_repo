@@ -11,7 +11,6 @@ app.use(session({secret: "ITM352 rocks!",resave: false, saveUninitialized: true}
 app.all('*', function (request, response, next) {
   // need to initialize an object to store the cart in the session. We do it when there is any request so that we don't have to check it exists
   // anytime it's used
-  console.log(request.method + ' to path ' + request.path);
   if (typeof request.session.cart == 'undefined') { request.session.cart = {}; }
   next();
 });
@@ -72,6 +71,7 @@ app.get("/checkout", function (request, response) {
     }
     response.send(invoice_str);
   });
+ 
 });
 
 app.use(express.static('.'));

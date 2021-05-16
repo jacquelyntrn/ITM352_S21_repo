@@ -1,0 +1,38 @@
+{
+    "Icecream": [
+        {
+            "name": "Softserve",
+            "price": 8.00,
+            "img": "softserve.jpg",
+            "disc": "Machine churned. Softer than the typical ice cream texture."
+        },
+        {
+            "name": "Mochi Ice Cream",
+            "price": 18.00,
+            "img": "mochi.jpg",
+            "disc": "Your classic matcha ice cream delicately wrapped in soft, chewy mochi."
+        }
+    ],
+    "Snacks": [
+        {
+            "name": "Pocky",
+            "price": 11.00,
+            "img": "pocky-matcha.jpg",
+            "disc": "The crunchy cracker stick snack dipped in delictable matcha flavor."
+        },
+        {
+            "name": "Kit Kat",
+            "price": 3.50,
+            "img": "kitkat.jpg",
+            "disc": "An exclusive flavor of Japan. A unique variation of the popular candy bar."
+        }
+    ],
+    "Deserts": [
+        {
+            "name": "Cake",
+            "price": 20.00,
+            "img": "./static/images/cake.jpg",
+            "disc": "A lightly flavored cake that isn't too sweet. A birthday favorite."
+        }
+    ]
+}
