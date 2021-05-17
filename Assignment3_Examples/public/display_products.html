@@ -1,3 +1,4 @@
+
 <head>
     <script src="./functions.js"></script>
     <script>
@@ -26,7 +27,7 @@
         nav_bar(this_product_key, products_data);
     </script>
 </head>
-<h2>You have <span id="cart_total">0</span> items in your shopping cart</h2>
+<h2>You have <span id="cart_total">0</span> items in your shopping cart: <a href='./cart.html'>View Cart</a></h2>
 <script>
     cart_total.innerHTML = total;
 // This function takes a string assumed to be a key in the products array above to display and select the corresponding products
@@ -41,7 +42,7 @@
     products = products_data[this_product_key];
     for (i = 0; i < products.length; i++) {
         order_str += `<TR><TD>${products[i]['name']}</TD><TD>${products[i]['price']}</TD><TD>
-                    <INPUT TYPE="TEXT"  name="quantities[${i}]" value="${(typeof shopping_cart[this_product_key]!='undefined')?shopping_cart[products_key][i]:0}"></TD></TR>`;
+                    <INPUT TYPE="TEXT"  name="quantities[${i}]" value="${(typeof shopping_cart[this_product_key]!='undefined')?shopping_cart[this_product_key][i]:0}"></TD></TR>`;
     }
     order_str += `</TABLE><br>
     <INPUT TYPE="SUBMIT"  name="Submit" value="Select">

@@ -236,7 +236,7 @@ app.post("/registration.html", function (request, response) {
    }
 });
 //used code from Lab13
-app.use(express.static(__dirname + '/static'));//dirname is directory name
+app.use(express.static('./static'));
 var listener = app.listen(8080, () => { console.log('server started listening on port ' + listener.address().port) });
 
 //helper functions
